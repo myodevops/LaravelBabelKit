@@ -1,71 +1,64 @@
-# laravel-localizer README
+## laravel-easy-localizer README
 
-This is the README for your extension "laravel-localizer". After writing up a brief description, we recommend including the following sections.
+Laravel Easy Localizer is a Visual Studio Code extension that simplifies the process of extracting and managing localization strings in Laravel projects.
 
-## Features
+### Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Automatically scans PHP files in your Laravel project for localization strings
+- Extracts strings in the format `{{ __("string") }}`
+- Supports multiple languages simultaneously
+- Scan only modified source files since the last scan
+- Merges new strings with existing language files
+- Creates a master language file (default: 'en.json') with all extracted strings
 
-For example if there is an image subfolder under your extension project workspace:
+### Installation
 
-\!\[feature X\]\(images/feature-x.png\)
+- Open Visual Studio Code
+- Go to the Extensions view (Ctrl+Shift+X)
+- Search for "Laravel Easy Localizer"
+- Click Install
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### Usage
 
-## Requirements
+The extension provides a series of commands that perform localization file management operations. All commands begin with the `LEL:` prefix. 
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+For launching the commands:
 
-## Extension Settings
+- Open your Laravel project in VSCode
+- Press Ctrl+Shift+P (Cmd+Shift+P on macOS) to open the Command Palette
+- Type `LEL:` and select the desidered command
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Here is the list of all commands of the extension:
 
-For example:
+| Command  | Description                         |
+|----------|----------------------------------|
+| `Generate` | Scan your project and generate/update language files in the lang/ directory, after prompting the list of the languages the list of languages ​​you want to generate localization for (e.g., "en,fr,es"). |
+| `Clear cache` | The extension uses a cache to ignore PHP source files that have already been scanned and remain unchanged, ensuring faster localization updates. This command clears the cache, allowing you to rescan all files. |
 
-This extension contributes the following settings:
+### Configuration
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+The configuration of the foo extension is done through the `.laravel-easy-localizer.json` file, which can be created in the main path of the project or in the `.vscode` directory.
 
-## Known Issues
+The file configuration is a JSON object that contain property for the configuration of the extension and the scope of the configuration is the project.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+Here is the list of the property of the configuration file:
 
-## Release Notes
+| Property | Description          | Values allowed |
+|----------|----------------------|----------------|
+| `defaultLanguages` | The list of languages for the files to be generated, that is suggested in the prompt that appears after launching the multilingual file generation. | A serie of language codes, usually in standard ISO 639-1 format, separated by comma. |
 
-Users appreciate release notes as you update your extension.
+### Release Notes
+You can find a detailed list of extension implementations in the [CHANGELOG](CHANGELOG.md) file.
 
-### 1.0.0
+### Contributions 
+Contributions are welcome!
 
-Initial release of ...
+### License
 
-### 1.0.1
+This extension is released under the [MIT License](LICENSE).
 
-Fixed issue #.
+### Support
 
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+If you encounter any problems or have suggestions, please open a issue in the [Issue section](https://github.com/The-Young-Maker/Laravel-Easy-Localizer/issues) of the project.
 
 **Enjoy!**

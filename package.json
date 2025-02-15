@@ -1,8 +1,8 @@
 {
-  "name": "laravel-localizer",
-  "displayName": "Laravel Localizer",
+  "name": "laravel-easy-localizer",
+  "displayName": "Laravel Easy Localizer",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.91.0"
   },
@@ -14,8 +14,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "laravel-localizer.helloWorld",
-        "title": "Hello World"
+        "command": "laravel-easy-localizer.generate",
+        "title": "LEL: Generate"
+      },
+      {
+        "command": "laravel-easy-localizer.clearcache",
+        "title": "LEL: Clear cache"
       }
     ]
   },
