@@ -1,9 +1,8 @@
 # Change Log
 
-All notable changes to the "laravel-localizer" extension will be documented in this file.
+## 0.0.2
+- Add the `.laravel-easy-localizer.json` configuration file
+- New option in configuration file: `defaultLanguages`
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
+## 0.0.1
 - Initial release
