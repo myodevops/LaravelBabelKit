@@ -23,29 +23,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activate = activate;
-exports.deactivate = deactivate;
+exports.LELclearcache = LELclearcache;
 const vscode = __importStar(require("vscode"));
-const LELgenerate_1 = require("./commands/LELgenerate");
-const LELclearcache_1 = require("./commands/LELclearcache");
-function activate(context) {
-    /**
-     * Command: laravel-easy-localizer.generate
-     * Generate the Json language files used by Laravel for the localization
-     */
-    const generateCmd = vscode.commands.registerCommand('laravel-easy-localizer.generate', () => {
-        (0, LELgenerate_1.LELgenerate)();
+const cache = __importStar(require("../cache"));
+async function LELclearcache() {
+    vscode.window.showWarningMessage("Are you sure you want to clear the file hash cache? All files will be reprocessed.", { modal: true }, "Yes").then(selection => {
+        if (selection === "Yes") {
+            try {
+                cache.clearCache();
+                vscode.window.showInformationMessage("File hash cache cleared. All files will be reprocessed in the next generation.");
+            }
+            catch (error) {
+                vscode.window.showErrorMessage(`Error clearing cache: ${error.message}`);
+            }
+        }
     });
-    context.subscriptions.push(generateCmd);
-    /**
-     * Command: laravel-easy-localizer.clearcache
-     * Delete all the cached hash of the files, for rescanning all the PHP files
-     */
-    const clearcacheCmd = vscode.commands.registerCommand('laravel-easy-localizer.clearcache', () => {
-        (0, LELclearcache_1.LELclearcache)();
-    });
-    context.subscriptions.push(clearcacheCmd);
 }
-// This method is called when your extension is deactivated
-function deactivate() { }
-//# sourceMappingURL=extension.js.map
+//# sourceMappingURL=LELclearcache.js.map
