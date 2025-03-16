@@ -29,8 +29,18 @@ const crypto = __importStar(require("crypto"));
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const cache = __importStar(require("./cache"));
-async function searchPhpFiles(dir, localizationStrings, excludePaths = []) {
-    const files = await getPhpFiles(dir, excludePaths); // Recover all PHP and Blade files
+const config = __importStar(require("./config"));
+/**
+ * Search and scan the PHP files of the projet
+ * @param dir The project directory
+ * @param localizationStrings The Set of files localized
+ * @param excludePaths The array of the path to excluded defined in the config
+ * @param excludeGitIgnore If true, follows the .gitignore file exclusion rules (in subdirectories too)
+ */
+async function searchPhpFiles(dir, localizationStrings, excludePaths = [], excludeGitIgnorePaths) {
+    // Recover all PHP and Blade files                                    
+    var files = await getPhpFiles(dir, excludePaths, excludeGitIgnorePaths);
+    // Scan all the PHP files founded for searching the localization functions for estrapolate the tags
     await vscode.window.withProgress({
         location: vscode.ProgressLocation.Notification, // Show a notification with progress bar
         title: "Scanning PHP files...",
@@ -69,15 +79,53 @@ async function searchPhpFiles(dir, localizationStrings, excludePaths = []) {
         vscode.window.showInformationMessage("Scan completed successfully!");
     });
 }
-async function getPhpFiles(dir, excludePaths = []) {
-    if (excludePaths.includes(dir)) {
-        return []; // Avoid scanning the excluded directory
+/**
+ * Recursive function for finding the PHP files, ignoring the paths to be excluded
+ * @param dir The current path to elaborate
+ * @param excludePaths The array of the path to exclude defined in setup
+ * @param excludeGitIgnore The setup option for considering the .gitignore file rules to ignore paths
+ * @param ignoreRules The rules encountered during the scan
+ * @returns The array of the files founded
+ */
+async function getPhpFiles(dir, excludePaths = [], excludeGitIgnorePaths, ignoreRules = []) {
+    try {
+        // Exclude manually defined directories
+        if (excludePaths.includes(dir)) {
+            return [];
+        }
+        const relativePath = path.relative(config.getRootPath(), dir);
+        // Updates the ignore object with the new rules of the current directory
+        let updatedIgnore = null;
+        if (excludeGitIgnorePaths) {
+            updatedIgnore = config.loadGitIgnore(dir, ignoreRules, config.getRootPath());
+            // If the directory is ignored, exit immediately without scanning it.
+            if (relativePath > '') {
+                if (updatedIgnore.ignores(relativePath)) {
+                    return [];
+                }
+            }
+        }
+        const entries = await fs.promises.readdir(dir, { withFileTypes: true });
+        const files = await Promise.all(entries.map(async (entry) => {
+            const res = path.resolve(dir, entry.name);
+            return entry.isDirectory()
+                ? getPhpFiles(res, excludePaths, excludeGitIgnorePaths, ignoreRules) // We pass the updated rules recursively
+                : res;
+        }));
+        let filteredFiles = files.flat().filter(file => path.extname(file) === '.php');
+        if (excludeGitIgnorePaths && updatedIgnore) {
+            filteredFiles = filteredFiles.filter(file => {
+                const relativePath = path.relative(config.getRootPath(), file)
+                    .replace(/^(\.\.[\/\\])+/g, '') // Remove the "../"
+                    .replace(/\\/g, "/"); // Convert "\" in "/" 
+                return !updatedIgnore.ignores(relativePath);
+            });
+        }
+        return filteredFiles;
     }
-    const entries = await fs.promises.readdir(dir, { withFileTypes: true });
-    const files = await Promise.all(entries.map((entry) => {
-        const res = path.resolve(dir, entry.name);
-        return entry.isDirectory() ? getPhpFiles(res, excludePaths) : res;
-    }));
-    return files.flat().filter(file => path.extname(file) === '.php');
+    catch (error) {
+        console.error(`Error scanning the directory ${dir}:`, error);
+        return [];
+    }
 }
 //# sourceMappingURL=scan.js.map

@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.0.4
+- New option in configuration file: `excludeGitIgnorePaths`
+
 ## 0.0.3
 - New option in configuration file: `excludePaths`
 

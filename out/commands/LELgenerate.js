@@ -29,13 +29,17 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const config = __importStar(require("../config"));
 const scan = __importStar(require("../scan"));
+/**
+ * Scan project subdirectories for .php files and process them for ctreating the localization files
+ * @returns
+ */
 async function LELgenerate() {
     vscode.window.showInformationMessage('Started extracting localization strings!');
     const localizationStrings = new Set();
     // Load the config file
     const configJson = config.loadConfig();
     // Search for PHP files and process them in parallel
-    await scan.searchPhpFiles(config.getRootPath(), localizationStrings, configJson.excludePaths);
+    await scan.searchPhpFiles(config.getRootPath(), localizationStrings, configJson.excludePaths, configJson.excludeGitIgnorePaths);
     // Generate JSON content
     const jsonContent = {};
     localizationStrings.forEach(str => {
