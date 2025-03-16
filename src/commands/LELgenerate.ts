@@ -4,6 +4,10 @@ import * as path from 'path';
 import * as config from '../config';
 import * as scan from '../scan';
 
+/**
+ * Scan project subdirectories for .php files and process them for ctreating the localization files
+ * @returns 
+ */
 export async function LELgenerate () {
 	vscode.window.showInformationMessage('Started extracting localization strings!');
 
@@ -13,7 +17,10 @@ export async function LELgenerate () {
 	const configJson = <any>config.loadConfig();
 	
 	// Search for PHP files and process them in parallel
-	await scan.searchPhpFiles(config.getRootPath(), localizationStrings, configJson.excludePaths);
+	await scan.searchPhpFiles(config.getRootPath(), 
+	                          localizationStrings, 
+							  configJson.excludePaths,
+							  configJson.excludeGitIgnorePaths);
 
 	// Generate JSON content
 	const jsonContent: { [key: string]: string } = {};
