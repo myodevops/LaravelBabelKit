@@ -41,7 +41,9 @@ export function loadConfig() {
     return {
         defaultLanguages: "en",
         excludePaths: [],
-        excludeGitIgnorePaths: false
+        excludeGitIgnorePaths: true,
+        autoDetectLocalizationPath: false,
+        localizationPath: ""
     };
 }
 
@@ -91,6 +93,10 @@ function normalizeConfig (config: any, rootPath: string) {
     config.excludePaths = (config.excludePaths ?? []).map((p: string) => path.resolve(rootPath, p));
 
     config.excludeGitIgnorePaths = (config.excludeGitIgnorePaths ?? true);   // Default true if not present
+
+    config.autoDetectLocalizationPath = (config.autoDetectLocalizationPath ?? false);   // Default false if not present
+
+    config.localizationPath = (config.localizationPath ?? "");
 }
 
 /**
@@ -144,5 +150,104 @@ function getLaravelVersion(): string | null {
             console.error('Error parsing composer.json:', error);
         }
     }
+    return null;
+}
+
+/**
+ * Return the path of the localization based on the configuration file or on the Laravel version
+ * @returns 
+ */
+export async function getLocalizationPath(configJson: any): Promise<string | null> {
+    const workspaceRoot = getRootPath();
+
+    // 1. Check manual config
+    if (configJson.localizationPath) {
+        if (configJson.localizationPath.startsWith("/")) {
+            configJson.localizationPath = configJson.localizationPath.substring(1);
+        }
+        
+        const absoluteManualPath = path.isAbsolute(configJson.localizationPath)
+            ? configJson.localizationPath
+            : path.join(workspaceRoot, configJson.localizationPath);
+
+        if (fs.existsSync(absoluteManualPath)) {
+            return absoluteManualPath;
+        } else {
+            vscode.window.showWarningMessage(`The configured localizationPath "${configJson.localizationPath}" does not exist.`);
+            return null;
+        }
+    }
+
+    // 2. Auto detect
+
+    if (configJson.autoDetectLocalizationPath) {
+        const localizationPath = await autoDetectLocalizationPath(workspaceRoot);
+        return localizationPath ? localizationPath : null;
+    }
+
+    // 3. No path found
+    vscode.window.showErrorMessage('Localization path not found. Please set "localizationPath" in settings or enable autoDetectLocalizationPath.');
+    return null;
+}
+
+/**
+ * Detect the localization path or propose it based on the Laravel version
+ * @param workspaceRoot 
+ * @returns 
+ */
+async function autoDetectLocalizationPath(workspaceRoot: string): Promise<string | null> {
+    const langPath = path.join(workspaceRoot, 'lang');
+    const resourcesLangPath = path.join(workspaceRoot, 'resources', 'lang');
+
+    // Step 1: Check ./lang
+    if (fs.existsSync(langPath)) {
+        return langPath;
+    }
+
+    // Step 2: Check ./resources/lang
+    if (fs.existsSync(resourcesLangPath)) {
+        return resourcesLangPath;
+    }
+
+    // Step 3: Read Laravel version
+    const composerJsonPath = path.join(workspaceRoot, 'composer.json');
+    if (fs.existsSync(composerJsonPath)) {
+        const composerContent = JSON.parse(fs.readFileSync(composerJsonPath, 'utf8'));
+        const requireSection = composerContent.require || composerContent['require-dev'];
+
+        if (requireSection && requireSection['laravel/framework']) {
+            const versionString = requireSection['laravel/framework'] as string;
+            const match = versionString.match(/\d+/);
+
+            let laravelVersion: number | null = null;
+            if (match && match[0]) {
+                laravelVersion = parseInt(match[0], 10);
+            }
+
+            const suggestedPath = (() => {
+                switch (true) {
+                    case (laravelVersion !== null && !isNaN(laravelVersion) && laravelVersion >= 9):
+                        return langPath;
+                    default:
+                        return resourcesLangPath;
+                }
+            })();
+
+            const selection = await vscode.window.showWarningMessage(
+                `Localization path not found. Create folder in ${suggestedPath}?`,
+                { modal: true },
+                "Yes"
+            );
+
+            if (selection === "Yes") {
+                fs.mkdirSync(suggestedPath, { recursive: true });
+                return suggestedPath;
+            } else {
+                return null;
+            }            
+        }
+    }
+
+    // Default case: No path found
     return null;
 }

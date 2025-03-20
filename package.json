@@ -2,7 +2,7 @@
   "name": "laravel-easy-localizer",
   "displayName": "Laravel Easy Localizer",
   "description": "",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.91.0"
   },
@@ -21,7 +21,43 @@
         "command": "laravel-easy-localizer.clearcache",
         "title": "LEL: Clear cache"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Laravel Easy Localizer",
+      "properties": {
+        "laravelEasyLocalizer.defaultLanguages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": ["en"],
+          "description": "List of default language codes for which localization JSON files will be generated. Example: [\"en\", \"it\", \"fr\"]"
+        },
+        "laravelEasyLocalizer.excludePaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Array of glob patterns or folder paths to exclude from the PHP source scan. Useful to skip vendor folders, tests, or custom directories."
+        },
+        "laravelEasyLocalizer.excludeGitIgnorePaths": {
+          "type": "boolean",
+          "default": true,
+          "description": "If enabled, all paths and files listed in .gitignore will be excluded from the PHP source scan."
+        },
+        "laravelEasyLocalizer.localizationPath": {
+          "type": "string",
+          "default": "",
+          "description": "Defines the relative or absolute path to the directory where localization JSON files are stored. If set, this path will take priority over automatic detection. Leave empty to enable auto-detection based on Laravel conventions."
+        },
+        "laravelEasyLocalizer.autoDetectLocalizationPath": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enables automatic detection of the localization directory if no manual path is set. It checks common Laravel paths like /lang and /resources/lang, and can propose creating the directory if not found."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

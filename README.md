@@ -47,6 +47,8 @@ Here is the list of the property of the configuration file:
 | `defaultLanguages`      | The list of languages for the files to be generated, that is suggested in the prompt that appears after launching the multilingual file generation. | A serie of language codes, usually in standard ISO 639-1 format, separated by comma. |
 | `excludePaths`          | Array of directory paths that should be excluded from the scanning process. Any PHP files inside these directories will be ignored during localization extraction. |Specify only the directory names as seen from the project root (e.g., "vendor" instead of "./vendor" or "/var/www/myproject/vendor"). |
 | `excludeGitIgnorePaths` | When enabled, this option ensures that any files and directories matching the rules defined in the project's .gitignore files are automatically excluded from the localization scan process. It simplifies configuration by preventing unnecessary scanning of files such as vendor dependencies, build artifacts, or other ignored paths. | `true` (default value if the property is not specified) or `false`<br>**Note**: This option strictly follows Git's standard .gitignore behavior. Rules are applied relative to the directory where each .gitignore file is located. Improper or unconventional rule usage—such as referencing redundant or incorrect paths—will not be interpreted or corrected by the extension. Refer to the official Gitignore documentation for proper rule syntax and usage. |
+| `localizationPath` | Defines the relative or absolute path to the directory where localization JSON files are stored. If set, this path will take priority over automatic detection. Use this option if your project has a custom localization directory structure. | A valid relative or absolute path. |
+| `autoDetectLocalizationPath ` | Enables automatic detection of the localization directory if no manual path is set. It checks common Laravel paths like /lang and /resources/lang, and can propose creating the directory if not found. | True (default value if the property is not specified) or False |
 
 #### Example of a configuration file
 Here is an example for a typically `.laravel-easy-localizer.json` configuration file:
@@ -58,7 +60,9 @@ Here is an example for a typically `.laravel-easy-localizer.json` configuration 
         "tests",
         "resources/views/auth"
     ],
-    "excludeGitIgnorePaths": true
+    "excludeGitIgnorePaths": true,
+    "localizationPath": "lang/",
+    "autoDetectLocalizationPath": true
 }
 ```
 

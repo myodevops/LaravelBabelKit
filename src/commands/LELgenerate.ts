@@ -43,7 +43,11 @@ export async function LELgenerate () {
 	const languages = languageCodes.split(',').map(code => code.trim());
 
 	// Write to lang/{language}.json files
-	const langFolderPath = path.join(config.getRootPath(), 'lang');
+	const langFolderPath = await config.getLocalizationPath(configJson);
+	if (!langFolderPath) {
+		vscode.window.showErrorMessage('No localization files generated: localization path not found or could not be determined.');
+		return;
+	}
 	if (!fs.existsSync(langFolderPath)) {
 		fs.mkdirSync(langFolderPath);
 	}

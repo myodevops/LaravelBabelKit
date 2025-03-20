@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.0.5
+- New option in configuration file: `localizationPath`
+- New option in configuration file: `autoDetectLocalizationPath`
+
 ## 0.0.4
 - New option in configuration file: `excludeGitIgnorePaths`
 
