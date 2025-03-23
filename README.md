@@ -49,6 +49,7 @@ Here is the list of the property of the configuration file:
 | `excludeGitIgnorePaths` | When enabled, this option ensures that any files and directories matching the rules defined in the project's .gitignore files are automatically excluded from the localization scan process. It simplifies configuration by preventing unnecessary scanning of files such as vendor dependencies, build artifacts, or other ignored paths. | `true` (default value if the property is not specified) or `false`<br>**Note**: This option strictly follows Git's standard .gitignore behavior. Rules are applied relative to the directory where each .gitignore file is located. Improper or unconventional rule usage—such as referencing redundant or incorrect paths—will not be interpreted or corrected by the extension. Refer to the official Gitignore documentation for proper rule syntax and usage. |
 | `localizationPath` | Defines the relative or absolute path to the directory where localization JSON files are stored. If set, this path will take priority over automatic detection. Use this option if your project has a custom localization directory structure. | A valid relative or absolute path. |
 | `autoDetectLocalizationPath ` | Enables automatic detection of the localization directory if no manual path is set. It checks common Laravel paths like /lang and /resources/lang, and can propose creating the directory if not found. | True (default value if the property is not specified) or False |
+| `disableCache` | Disables the caching mechanism used by the extension. By default, the extension caches the content of scanned files to avoid re-scanning unchanged files, significantly speeding up subsequent scans. Enabling this option forces the extension to re-scan all files every time, regardless of whether they have been modified. | `true` or `false` (default value if the property is not specified: `false`) |
 
 #### Example of a configuration file
 Here is an example for a typically `.laravel-easy-localizer.json` configuration file:
@@ -62,7 +63,8 @@ Here is an example for a typically `.laravel-easy-localizer.json` configuration 
     ],
     "excludeGitIgnorePaths": true,
     "localizationPath": "lang/",
-    "autoDetectLocalizationPath": true
+    "autoDetectLocalizationPath": true,
+    "disableCache": false
 }
 ```
 

@@ -29,7 +29,7 @@ const crypto = __importStar(require("crypto"));
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const cache = __importStar(require("./cache"));
-const config = __importStar(require("./config"));
+const autoload_1 = require("./autoload");
 /**
  * Search and scan the PHP files of the projet
  * @param dir The project directory
@@ -93,11 +93,11 @@ async function getPhpFiles(dir, excludePaths = [], excludeGitIgnorePaths, ignore
         if (excludePaths.includes(dir)) {
             return [];
         }
-        const relativePath = path.relative(config.getRootPath(), dir);
+        const relativePath = path.relative(autoload_1.config.rootPath, dir);
         // Updates the ignore object with the new rules of the current directory
         let updatedIgnore = null;
         if (excludeGitIgnorePaths) {
-            updatedIgnore = config.loadGitIgnore(dir, ignoreRules, config.getRootPath());
+            updatedIgnore = (0, autoload_1.loadGitIgnore)(dir, ignoreRules, autoload_1.config.rootPath);
             // If the directory is ignored, exit immediately without scanning it.
             if (relativePath > '') {
                 if (updatedIgnore.ignores(relativePath)) {
@@ -115,7 +115,7 @@ async function getPhpFiles(dir, excludePaths = [], excludeGitIgnorePaths, ignore
         let filteredFiles = files.flat().filter(file => path.extname(file) === '.php');
         if (excludeGitIgnorePaths && updatedIgnore) {
             filteredFiles = filteredFiles.filter(file => {
-                const relativePath = path.relative(config.getRootPath(), file)
+                const relativePath = path.relative(autoload_1.config.rootPath, file)
                     .replace(/^(\.\.[\/\\])+/g, '') // Remove the "../"
                     .replace(/\\/g, "/"); // Convert "\" in "/" 
                 return !updatedIgnore.ignores(relativePath);

@@ -43,7 +43,8 @@ export function loadConfig() {
         excludePaths: [],
         excludeGitIgnorePaths: true,
         autoDetectLocalizationPath: false,
-        localizationPath: ""
+        localizationPath: "",
+        disableCache: false
     };
 }
 
@@ -97,6 +98,8 @@ function normalizeConfig (config: any, rootPath: string) {
     config.autoDetectLocalizationPath = (config.autoDetectLocalizationPath ?? false);   // Default false if not present
 
     config.localizationPath = (config.localizationPath ?? "");
+    
+    config.disableCache = (config.disableCache ?? false);
 }
 
 /**

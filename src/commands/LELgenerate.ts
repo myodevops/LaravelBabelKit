@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as config from '../config';
-import * as scan from '../scan';
+import * as scan from './../scan';
+import { config } from './../autoload';
 
 /**
  * Scan project subdirectories for .php files and process them for ctreating the localization files
@@ -13,14 +13,11 @@ export async function LELgenerate () {
 
 	const localizationStrings: Set<string> = new Set();
 
-	// Load the config file
-	const configJson = <any>config.loadConfig();
-	
 	// Search for PHP files and process them in parallel
-	await scan.searchPhpFiles(config.getRootPath(), 
+	await scan.searchPhpFiles(config.rootPath, 
 	                          localizationStrings, 
-							  configJson.excludePaths,
-							  configJson.excludeGitIgnorePaths);
+							  config.excludePaths,
+							  config.excludeGitIgnorePaths);
 
 	// Generate JSON content
 	const jsonContent: { [key: string]: string } = {};
@@ -31,7 +28,7 @@ export async function LELgenerate () {
 	// Get language codes from user
 	const languageCodes = await vscode.window.showInputBox({
 		prompt: 'Enter the 2-letter language codes separated by commas (e.g., en,fr,es)',
-		value: configJson.defaultLanguages,
+		value: config.defaultLanguages,
 		placeHolder: 'en,fr,es'
 	});
 
@@ -43,17 +40,16 @@ export async function LELgenerate () {
 	const languages = languageCodes.split(',').map(code => code.trim());
 
 	// Write to lang/{language}.json files
-	const langFolderPath = await config.getLocalizationPath(configJson);
-	if (!langFolderPath) {
+	if (config.langFolderPath === '') {
 		vscode.window.showErrorMessage('No localization files generated: localization path not found or could not be determined.');
 		return;
 	}
-	if (!fs.existsSync(langFolderPath)) {
-		fs.mkdirSync(langFolderPath);
+	if (!fs.existsSync(config.langFolderPath)) {
+		fs.mkdirSync(config.langFolderPath);
 	}
 
 	for (const lang of languages) {
-		const outputFilePath = path.join(langFolderPath, `${lang}.json`);
+		const outputFilePath = path.join(config.langFolderPath, `${lang}.json`);
 
 		// Check if file exists and merge with existing content
 		let existingContent = {};

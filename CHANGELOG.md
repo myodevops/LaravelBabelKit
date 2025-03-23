@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.0.6
+- New option in configuration file: `disableCache`
+- Optimization of the config file management
+
 ## 0.0.5
 - New option in configuration file: `localizationPath`
 - New option in configuration file: `autoDetectLocalizationPath`

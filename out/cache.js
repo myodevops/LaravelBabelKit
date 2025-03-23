@@ -29,14 +29,21 @@ exports.clearCache = clearCache;
 exports.saveCache = saveCache;
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
-const config = __importStar(require("./config"));
+const vscode = __importStar(require("vscode"));
+const autoload_1 = require("./autoload");
 let fileCache = {}; // Cache of hash MD5
 let cacheFileIsRead = false;
 function getCache() {
+    if (autoload_1.config.disableCache) {
+        return {};
+    }
     readCacheFile();
     return fileCache;
 }
 function addToCache(file, hash) {
+    if (autoload_1.config.disableCache) {
+        return;
+    }
     readCacheFile();
     fileCache[file] = hash;
 }
@@ -44,12 +51,24 @@ function addToCache(file, hash) {
  * Empty the file cache
  */
 function clearCache() {
-    fileCache = {};
-    saveCache();
+    if (autoload_1.config.disableCache) {
+        vscode.window.showErrorMessage("The cache is disabled!");
+        return false;
+    }
+    vscode.window.showWarningMessage("Are you sure you want to clear the file hash cache? All files will be reprocessed.", { modal: true }, "Yes").then(selection => {
+        if (selection === "Yes") {
+            readCacheFile();
+            fileCache = {};
+            saveCache();
+        }
+    });
 }
 function saveCache() {
+    if (autoload_1.config.disableCache) {
+        return;
+    }
     // Save cache to file
-    const cachePath = path.join(config.getRootPath(), '.localization-cache.json');
+    const cachePath = path.join(autoload_1.config.rootPath, '.localization-cache.json');
     fs.writeFileSync(cachePath, JSON.stringify(fileCache));
 }
 function readCacheFile() {
@@ -58,7 +77,7 @@ function readCacheFile() {
         return;
     }
     // Load cache from file
-    const cachePath = path.join(config.getRootPath(), '.localization-cache.json');
+    const cachePath = path.join(autoload_1.config.rootPath, '.localization-cache.json');
     if (fs.existsSync(cachePath)) {
         fileCache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
     }

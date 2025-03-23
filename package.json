@@ -1,8 +1,9 @@
 {
   "name": "laravel-easy-localizer",
   "displayName": "Laravel Easy Localizer",
+  "publisher": "The-Young-Maker",
   "description": "",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "engines": {
     "vscode": "^1.91.0"
   },
@@ -30,7 +31,9 @@
           "items": {
             "type": "string"
           },
-          "default": ["en"],
+          "default": [
+            "en"
+          ],
           "description": "List of default language codes for which localization JSON files will be generated. Example: [\"en\", \"it\", \"fr\"]"
         },
         "laravelEasyLocalizer.excludePaths": {
@@ -55,6 +58,11 @@
           "type": "boolean",
           "default": true,
           "description": "Enables automatic detection of the localization directory if no manual path is set. It checks common Laravel paths like /lang and /resources/lang, and can propose creating the directory if not found."
+        },
+        "laravelEasyLocalizer.disableCache": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disables the caching mechanism used by the extension. By default, the extension caches the content of scanned files to avoid re-scanning unchanged files. Enabling this option forces the extension to re-scan all files every time."
         }
       }
     }
@@ -68,14 +76,14 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.91.0",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
+    "@types/vscode": "^1.91.0",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.11.0",
-    "eslint": "^8.57.0",
-    "typescript": "^5.4.5",
     "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.4.0"
+    "@vscode/test-electron": "^2.4.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
   }
 }

@@ -3,7 +3,7 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as cache from './cache';
-import * as config from './config';
+import { config, loadGitIgnore } from './autoload';
 
 /**
  * Search and scan the PHP files of the projet
@@ -83,12 +83,12 @@ async function getPhpFiles(
             return [];
         }
 
-        const relativePath = path.relative(config.getRootPath(), dir);
+        const relativePath = path.relative(config.rootPath, dir);
         
         // Updates the ignore object with the new rules of the current directory
         let updatedIgnore = null;
         if (excludeGitIgnorePaths) {
-            updatedIgnore = config.loadGitIgnore(dir, ignoreRules, config.getRootPath());
+            updatedIgnore = loadGitIgnore(dir, ignoreRules, config.rootPath);
 
             // If the directory is ignored, exit immediately without scanning it.
             if (relativePath > '') {
@@ -111,7 +111,7 @@ async function getPhpFiles(
         let filteredFiles = files.flat().filter(file => path.extname(file) === '.php');
         if (excludeGitIgnorePaths && updatedIgnore) {
             filteredFiles = filteredFiles.filter(file => {
-                const relativePath = path.relative(config.getRootPath(), file)
+                const relativePath = path.relative(config.rootPath, file)
                     .replace(/^(\.\.[\/\\])+/g, '')  // Remove the "../"
                     .replace(/\\/g, "/");  // Convert "\" in "/" 
                 return !updatedIgnore.ignores(relativePath);

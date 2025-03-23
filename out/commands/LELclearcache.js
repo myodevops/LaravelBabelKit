@@ -25,18 +25,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LELclearcache = LELclearcache;
 const vscode = __importStar(require("vscode"));
-const cache = __importStar(require("../cache"));
+const cache = __importStar(require("./../cache"));
 async function LELclearcache() {
-    vscode.window.showWarningMessage("Are you sure you want to clear the file hash cache? All files will be reprocessed.", { modal: true }, "Yes").then(selection => {
-        if (selection === "Yes") {
-            try {
-                cache.clearCache();
-                vscode.window.showInformationMessage("File hash cache cleared. All files will be reprocessed in the next generation.");
-            }
-            catch (error) {
-                vscode.window.showErrorMessage(`Error clearing cache: ${error.message}`);
-            }
+    try {
+        if (cache.clearCache()) {
+            vscode.window.showInformationMessage("File hash cache cleared. All files will be reprocessed in the next generation.");
         }
-    });
+    }
+    catch (error) {
+        vscode.window.showErrorMessage(`Error clearing cache: ${error.message}`);
+    }
 }
 //# sourceMappingURL=LELclearcache.js.map
