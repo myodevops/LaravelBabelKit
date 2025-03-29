@@ -26,6 +26,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LELclearcache = LELclearcache;
 const vscode = __importStar(require("vscode"));
 const cache = __importStar(require("./../cache"));
+/**
+ * Clears the file hash cache, forcing all files to be reprocessed during the next localization generation.
+ * Displays a success or error message to the user via VS Code's notification system.
+ */
 async function LELclearcache() {
     try {
         if (cache.clearCache()) {

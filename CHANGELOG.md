@@ -1,4 +1,6 @@
 # Change Log
+## 0.0.7
+- New option in configuration file: `jsoncReferenceLanguage`
 
 ## 0.0.6
 - New option in configuration file: `disableCache`

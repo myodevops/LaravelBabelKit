@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as cache from './cache';
 import { config, loadGitIgnore } from './autoload';
+import { ScanResult } from './types/scanresult.d';
 
 /**
  * Search and scan the PHP files of the projet
@@ -13,9 +14,13 @@ import { config, loadGitIgnore } from './autoload';
  * @param excludeGitIgnore If true, follows the .gitignore file exclusion rules (in subdirectories too)
  */
 export async function searchPhpFiles(dir: string, 
-                                     localizationStrings: Set<string>, 
                                      excludePaths: string[] = [], 
-                                     excludeGitIgnorePaths: boolean) {
+                                     excludeGitIgnorePaths: boolean): Promise<ScanResult> {
+    const scanResult: ScanResult = {
+        localizationStrings: new Set(),
+        filesMap: {}
+    };
+                            
     // Recover all PHP and Blade files                                    
     var files = await getPhpFiles(dir, excludePaths, excludeGitIgnorePaths); 
 
@@ -38,16 +43,51 @@ export async function searchPhpFiles(dir: string,
             try {
                 const content = fs.readFileSync(file, 'utf8');
                 const hash = crypto.createHash('md5').update(content).digest('hex');
+                const isCached = cache.isFileCached(file, hash);
 
-                if (fileCache[file] === hash) { continue; }
-                cache.addToCache (file, hash);
+                if (!isCached) {
+                    const labelCountMap: Record<string, number> = {};
+                    const regex = /__\(\s*['"](.+?)['"]\s*(?:,\s*\[.*?\])?\s*\)/g;
+                    let match;
 
-                // Find localized strings with __() e trans()
-                const regex = /__\(\s*['"](.+?)['"]\s*(?:,\s*\[.*?\])?\s*\)/g;
-                let match;
-                while ((match = regex.exec(content)) !== null) {
-                    localizationStrings.add(match[1]); // Adds the found strings
-                }
+                    // Find localized strings with __() e trans()
+                    while ((match = regex.exec(content)) !== null) {
+                        const label = match[1];
+                        labelCountMap[label] = (labelCountMap[label] || 0) + 1;
+                    }
+
+                    for (const label in labelCountMap) {
+                        scanResult.localizationStrings.add(label); // Adds the found strings
+                    
+                        // Add the update of filesMap here
+                        if (!scanResult.filesMap[label]) {
+                            scanResult.filesMap[label] = {};
+                        }
+                    
+                        // Avoid duplicates: add only if the file is not already posted
+                        scanResult.filesMap[label][file] = {
+                            count: labelCountMap[label],
+                            fromCache: false
+                        };
+                        cache.addToCache(file, labelCountMap, hash);
+                    }
+                } else {
+                    const cachedLabels = cache.getCachedLabels(file);
+                    if (cachedLabels) {
+                        for (const label in cachedLabels) {
+                        scanResult.localizationStrings.add(label);
+
+                        if (!scanResult.filesMap[label]) {
+                            scanResult.filesMap[label] = {};
+                        }
+
+                        scanResult.filesMap[label][file] = {
+                            count: cachedLabels[label],
+                            fromCache: true
+                        };
+                        }
+                    }
+                } 
             } catch (error) {
                 console.error(`Error during the reading of ${file}:`, error);
             }
@@ -61,6 +101,8 @@ export async function searchPhpFiles(dir: string,
 
         vscode.window.showInformationMessage("Scan completed successfully!");
     });
+
+    return scanResult;
 }
 
 /**

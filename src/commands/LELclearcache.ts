@@ -1,6 +1,10 @@
 import * as vscode from 'vscode';
 import * as cache from './../cache';
 
+/**
+ * Clears the file hash cache, forcing all files to be reprocessed during the next localization generation.
+ * Displays a success or error message to the user via VS Code's notification system.
+ */
 export async function LELclearcache() {
     try {
         if (cache.clearCache ()) {

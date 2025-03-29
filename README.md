@@ -50,6 +50,7 @@ Here is the list of the property of the configuration file:
 | `localizationPath` | Defines the relative or absolute path to the directory where localization JSON files are stored. If set, this path will take priority over automatic detection. Use this option if your project has a custom localization directory structure. | A valid relative or absolute path. |
 | `autoDetectLocalizationPath ` | Enables automatic detection of the localization directory if no manual path is set. It checks common Laravel paths like /lang and /resources/lang, and can propose creating the directory if not found. | True (default value if the property is not specified) or False |
 | `disableCache` | Disables the caching mechanism used by the extension. By default, the extension caches the content of scanned files to avoid re-scanning unchanged files, significantly speeding up subsequent scans. Enabling this option forces the extension to re-scan all files every time, regardless of whether they have been modified. | `true` or `false` (default value if the property is not specified: `false`) |
+| `jsoncReferenceLanguage` | Allows generating a `.jsonc` localization file with source file comments, only for a specific language defined by the option. | Enter a language code useful for creating the `.jsonc` file |    
 
 #### Example of a configuration file
 Here is an example for a typically `.laravel-easy-localizer.json` configuration file:
@@ -64,7 +65,8 @@ Here is an example for a typically `.laravel-easy-localizer.json` configuration 
     "excludeGitIgnorePaths": true,
     "localizationPath": "lang/",
     "autoDetectLocalizationPath": true,
-    "disableCache": false
+    "disableCache": false,
+    "jsoncReferenceLanguage": "en"
 }
 ```
 

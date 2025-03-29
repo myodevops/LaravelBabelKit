@@ -37,7 +37,11 @@ const autoload_1 = require("./autoload");
  * @param excludePaths The array of the path to excluded defined in the config
  * @param excludeGitIgnore If true, follows the .gitignore file exclusion rules (in subdirectories too)
  */
-async function searchPhpFiles(dir, localizationStrings, excludePaths = [], excludeGitIgnorePaths) {
+async function searchPhpFiles(dir, excludePaths = [], excludeGitIgnorePaths) {
+    const scanResult = {
+        localizationStrings: new Set(),
+        filesMap: {}
+    };
     // Recover all PHP and Blade files                                    
     var files = await getPhpFiles(dir, excludePaths, excludeGitIgnorePaths);
     // Scan all the PHP files founded for searching the localization functions for estrapolate the tags
@@ -57,15 +61,44 @@ async function searchPhpFiles(dir, localizationStrings, excludePaths = [], exclu
             try {
                 const content = fs.readFileSync(file, 'utf8');
                 const hash = crypto.createHash('md5').update(content).digest('hex');
-                if (fileCache[file] === hash) {
-                    continue;
+                const isCached = cache.isFileCached(file, hash);
+                if (!isCached) {
+                    const labelCountMap = {};
+                    const regex = /__\(\s*['"](.+?)['"]\s*(?:,\s*\[.*?\])?\s*\)/g;
+                    let match;
+                    // Find localized strings with __() e trans()
+                    while ((match = regex.exec(content)) !== null) {
+                        const label = match[1];
+                        labelCountMap[label] = (labelCountMap[label] || 0) + 1;
+                    }
+                    for (const label in labelCountMap) {
+                        scanResult.localizationStrings.add(label); // Adds the found strings
+                        // Add the update of filesMap here
+                        if (!scanResult.filesMap[label]) {
+                            scanResult.filesMap[label] = {};
+                        }
+                        // Avoid duplicates: add only if the file is not already posted
+                        scanResult.filesMap[label][file] = {
+                            count: labelCountMap[label],
+                            fromCache: false
+                        };
+                        cache.addToCache(file, labelCountMap, hash);
+                    }
                 }
-                cache.addToCache(file, hash);
-                // Find localized strings with __() e trans()
-                const regex = /__\(\s*['"](.+?)['"]\s*(?:,\s*\[.*?\])?\s*\)/g;
-                let match;
-                while ((match = regex.exec(content)) !== null) {
-                    localizationStrings.add(match[1]); // Adds the found strings
+                else {
+                    const cachedLabels = cache.getCachedLabels(file);
+                    if (cachedLabels) {
+                        for (const label in cachedLabels) {
+                            scanResult.localizationStrings.add(label);
+                            if (!scanResult.filesMap[label]) {
+                                scanResult.filesMap[label] = {};
+                            }
+                            scanResult.filesMap[label][file] = {
+                                count: cachedLabels[label],
+                                fromCache: true
+                            };
+                        }
+                    }
                 }
             }
             catch (error) {
@@ -78,6 +111,7 @@ async function searchPhpFiles(dir, localizationStrings, excludePaths = [], exclu
         cache.saveCache();
         vscode.window.showInformationMessage("Scan completed successfully!");
     });
+    return scanResult;
 }
 /**
  * Recursive function for finding the PHP files, ignoring the paths to be excluded

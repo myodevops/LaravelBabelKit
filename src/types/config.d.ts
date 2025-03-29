@@ -1,3 +1,8 @@
+/**
+ * Represents the configuration settings for the Laravel Easy Localizer extension.
+ * This interface defines the structure of the configuration object used to customize
+ * the behavior of the localization process.
+ */
 export interface Config {
     rootPath: string;
     defaultLanguages: string;
@@ -6,5 +11,6 @@ export interface Config {
     autoDetectLocalizationPath: boolean;
     localizationPath: string;
     disableCache: boolean;
-    langFolderPath: string
+    langFolderPath: string,
+    jsoncReferenceLanguage: string
 }

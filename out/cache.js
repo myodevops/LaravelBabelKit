@@ -27,12 +27,17 @@ exports.getCache = getCache;
 exports.addToCache = addToCache;
 exports.clearCache = clearCache;
 exports.saveCache = saveCache;
+exports.isFileCached = isFileCached;
+exports.getCachedLabels = getCachedLabels;
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const vscode = __importStar(require("vscode"));
 const autoload_1 = require("./autoload");
-let fileCache = {}; // Cache of hash MD5
+let fileCache = {};
 let cacheFileIsRead = false;
+/**
+ * Load the file cache (public method)
+ */
 function getCache() {
     if (autoload_1.config.disableCache) {
         return {};
@@ -40,12 +45,18 @@ function getCache() {
     readCacheFile();
     return fileCache;
 }
-function addToCache(file, hash) {
+/**
+ * Add an entity to the file cache
+ */
+function addToCache(file, labels, hash) {
     if (autoload_1.config.disableCache) {
         return;
     }
     readCacheFile();
-    fileCache[file] = hash;
+    fileCache[file] = {
+        hash,
+        labels
+    };
 }
 /**
  * Empty the file cache
@@ -63,14 +74,20 @@ function clearCache() {
         }
     });
 }
+/**
+ * Save the file cache
+ */
 function saveCache() {
     if (autoload_1.config.disableCache) {
         return;
     }
     // Save cache to file
     const cachePath = path.join(autoload_1.config.rootPath, '.localization-cache.json');
-    fs.writeFileSync(cachePath, JSON.stringify(fileCache));
+    fs.writeFileSync(cachePath, JSON.stringify(fileCache, null, 2), 'utf8');
 }
+/**
+ * Read the file cache (local method)
+ */
 function readCacheFile() {
     // Read the file only a time
     if (cacheFileIsRead) {
@@ -79,9 +96,35 @@ function readCacheFile() {
     // Load cache from file
     const cachePath = path.join(autoload_1.config.rootPath, '.localization-cache.json');
     if (fs.existsSync(cachePath)) {
-        fileCache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+        try {
+            fileCache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+        }
+        catch (e) {
+            console.warn('⚠️ Failed to parse localization cache. Using empty cache.');
+            fileCache = {};
+        }
     }
     cacheFileIsRead = true;
+}
+/**
+ * Returns true if the file exists in cache.
+ */
+function isFileCached(file, currentHash) {
+    if (autoload_1.config.disableCache) {
+        return false;
+    }
+    readCacheFile();
+    return fileCache[file]?.hash === currentHash;
+}
+/**
+ * Get cached labels for a file (if present).
+ */
+function getCachedLabels(file) {
+    if (autoload_1.config.disableCache) {
+        return null;
+    }
+    readCacheFile();
+    return fileCache[file]?.labels || null;
 }
 process.on('exit', saveCache);
 process.on('SIGINT', () => { saveCache(); process.exit(); }); // CTRL+C

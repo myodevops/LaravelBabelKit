@@ -35,6 +35,9 @@ const vscode = __importStar(require("vscode"));
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const ignore_1 = __importDefault(require("ignore"));
+/**
+ * Return the root path of the project
+ */
 function getRootPath() {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     let rootPath = '';
@@ -46,7 +49,6 @@ function getRootPath() {
 /**
  * Load the .laravel-easy-localizer.json configuration file and normalize the config object
  * @param rootPath The root path of the Laravel project
- * @returns
  */
 function loadConfig() {
     const configPaths = [
@@ -72,7 +74,8 @@ function loadConfig() {
         excludeGitIgnorePaths: true,
         autoDetectLocalizationPath: false,
         localizationPath: "",
-        disableCache: false
+        disableCache: false,
+        jsoncReferenceLanguage: ""
     };
 }
 /**
@@ -113,12 +116,23 @@ function loadGitIgnore(dir, ignoreRules, projectRoot) {
  * @param config The config readed from the .laravel-easy-localizer.json file
  */
 function normalizeConfig(config, rootPath) {
-    config.defaultLanguages = config.defaultLanguages ?? "en";
+    if (typeof config.defaultLanguages === 'string') {
+        config.defaultLanguages = config.defaultLanguages ?? "en";
+    }
+    else {
+        config.defaultLanguages = "en";
+    }
     config.excludePaths = (config.excludePaths ?? []).map((p) => path.resolve(rootPath, p));
-    config.excludeGitIgnorePaths = (config.excludeGitIgnorePaths ?? true); // Default true if not present
-    config.autoDetectLocalizationPath = (config.autoDetectLocalizationPath ?? false); // Default false if not present
+    config.excludeGitIgnorePaths = (config.excludeGitIgnorePaths ?? true);
+    config.autoDetectLocalizationPath = (config.autoDetectLocalizationPath ?? false);
     config.localizationPath = (config.localizationPath ?? "");
     config.disableCache = (config.disableCache ?? false);
+    if (typeof config.defaultLanguages === 'string') {
+        config.jsoncReferenceLanguage = config.jsoncReferenceLanguage ?? "";
+    }
+    else {
+        config.jsoncReferenceLanguage = "";
+    }
 }
 /**
  * Determines the language directory path based on Laravel's version and common structure.
