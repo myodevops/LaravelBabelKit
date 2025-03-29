@@ -34,9 +34,16 @@ let config = {
     autoDetectLocalizationPath: false,
     localizationPath: '',
     disableCache: false,
-    langFolderPath: ''
+    langFolderPath: '',
+    jsoncReferenceLanguage: ''
 };
 exports.config = config;
+/**
+ * Initializes the extension's configuration by loading settings from the configuration file,
+ * determining the localization path, and populating the global `config` object.
+ * This function will execute only the first time that the extension is activated
+ * So that, if you change the configuration file, you must close and repoen Visual Studio Code
+ */
 async function initConfig() {
     const configJson = configModule.loadConfig();
     const localizationPath = await configModule.getLocalizationPath(configJson);
@@ -48,7 +55,8 @@ async function initConfig() {
         autoDetectLocalizationPath: configJson.autoDetectLocalizationPath,
         localizationPath: configJson.localizationPath,
         disableCache: configJson.disableCache,
-        langFolderPath: localizationPath ?? ''
+        langFolderPath: localizationPath ?? '',
+        jsoncReferenceLanguage: configJson.jsoncReferenceLanguage
     };
 }
 // Autoload of the json configuration file

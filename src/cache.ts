@@ -2,11 +2,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { config } from './autoload';
+import { LabelCache, FileCacheEntry } from './types/labelcache';
 
-
-let fileCache: Record<string, string> = {}; // Cache of hash MD5
+let fileCache: Record<string, FileCacheEntry> = {};
 let cacheFileIsRead = false;
 
+/**
+ * Load the file cache (public method)
+ */
 export function getCache () {
     if (config.disableCache) { return {}; }
 
@@ -14,11 +17,18 @@ export function getCache () {
     return fileCache;
 }
 
-export function addToCache (file: string, hash: string) { 
+/**
+ * Add an entity to the file cache
+ */
+export function addToCache (file: string, labels: Record<string, number>, hash: string): void {
     if (config.disableCache) { return; }
 
     readCacheFile ();
-    fileCache[file] = hash;
+
+    fileCache[file] = {
+        hash,
+        labels
+    };
 }
 
 /**
@@ -43,14 +53,20 @@ export function clearCache () {
     });
 }
 
+/**
+ * Save the file cache
+ */
 export function saveCache () {
     if (config.disableCache) { return; }
     
     // Save cache to file
     const cachePath = path.join(config.rootPath, '.localization-cache.json');
-    fs.writeFileSync(cachePath, JSON.stringify(fileCache));   
+    fs.writeFileSync(cachePath, JSON.stringify(fileCache, null, 2), 'utf8'); 
 }
 
+/**
+ * Read the file cache (local method)
+ */
 function readCacheFile () {
     // Read the file only a time
     if (cacheFileIsRead) { return; }
@@ -58,10 +74,39 @@ function readCacheFile () {
     // Load cache from file
     const cachePath = path.join(config.rootPath, '.localization-cache.json');
     if (fs.existsSync(cachePath)) {
-        fileCache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+        try {
+            fileCache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+        } catch (e) {
+            console.warn('⚠️ Failed to parse localization cache. Using empty cache.');
+            fileCache = {};
+        }
     }
     
     cacheFileIsRead = true;
+}
+
+/**
+ * Returns true if the file exists in cache.
+ */
+export function isFileCached(file: string, currentHash: string): boolean {
+    if (config.disableCache) {
+        return false;
+    }
+    
+    readCacheFile();
+    return fileCache[file]?.hash === currentHash;
+}
+
+/**
+ * Get cached labels for a file (if present).
+ */
+export function getCachedLabels(file: string): Record<string, number> | null {
+    if (config.disableCache) {
+        return null;
+    }
+
+    readCacheFile();
+    return fileCache[file]?.labels || null;
 }
 
 process.on('exit', saveCache);

@@ -3,6 +3,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import ignore from 'ignore';
 
+/**
+ * Return the root path of the project
+ */
 export function getRootPath () {
     const workspaceFolders = vscode.workspace.workspaceFolders;
 
@@ -17,7 +20,6 @@ export function getRootPath () {
 /**
  * Load the .laravel-easy-localizer.json configuration file and normalize the config object
  * @param rootPath The root path of the Laravel project
- * @returns 
  */
 export function loadConfig() {
     const configPaths = [
@@ -44,7 +46,8 @@ export function loadConfig() {
         excludeGitIgnorePaths: true,
         autoDetectLocalizationPath: false,
         localizationPath: "",
-        disableCache: false
+        disableCache: false,
+        jsoncReferenceLanguage: ""
     };
 }
 
@@ -89,17 +92,27 @@ export function loadGitIgnore(dir: string, ignoreRules: string[], projectRoot: s
  * @param config The config readed from the .laravel-easy-localizer.json file
  */
 function normalizeConfig (config: any, rootPath: string) {
-    config.defaultLanguages = config.defaultLanguages ?? "en";
-
+    if (typeof config.defaultLanguages === 'string') {
+        config.defaultLanguages = config.defaultLanguages ?? "en";
+    } else {
+        config.defaultLanguages = "en";
+    }
+    
     config.excludePaths = (config.excludePaths ?? []).map((p: string) => path.resolve(rootPath, p));
 
-    config.excludeGitIgnorePaths = (config.excludeGitIgnorePaths ?? true);   // Default true if not present
+    config.excludeGitIgnorePaths = (config.excludeGitIgnorePaths ?? true);
 
-    config.autoDetectLocalizationPath = (config.autoDetectLocalizationPath ?? false);   // Default false if not present
+    config.autoDetectLocalizationPath = (config.autoDetectLocalizationPath ?? false);
 
     config.localizationPath = (config.localizationPath ?? "");
     
     config.disableCache = (config.disableCache ?? false);
+
+    if (typeof config.defaultLanguages === 'string') {
+        config.jsoncReferenceLanguage = config.jsoncReferenceLanguage ?? "";
+    } else {
+        config.jsoncReferenceLanguage = "";
+    }
 }
 
 /**

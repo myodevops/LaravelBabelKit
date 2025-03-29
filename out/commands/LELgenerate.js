@@ -29,18 +29,17 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const scan = __importStar(require("./../scan"));
 const autoload_1 = require("./../autoload");
+const jsoncExporter_1 = require("./../jsoncExporter");
 /**
  * Scan project subdirectories for .php files and process them for ctreating the localization files
- * @returns
  */
 async function LELgenerate() {
     vscode.window.showInformationMessage('Started extracting localization strings!');
-    const localizationStrings = new Set();
     // Search for PHP files and process them in parallel
-    await scan.searchPhpFiles(autoload_1.config.rootPath, localizationStrings, autoload_1.config.excludePaths, autoload_1.config.excludeGitIgnorePaths);
+    const scanResult = await scan.searchPhpFiles(autoload_1.config.rootPath, autoload_1.config.excludePaths, autoload_1.config.excludeGitIgnorePaths);
     // Generate JSON content
     const jsonContent = {};
-    localizationStrings.forEach(str => {
+    scanResult.localizationStrings.forEach(str => {
         jsonContent[str] = '';
     });
     // Get language codes from user
@@ -54,6 +53,12 @@ async function LELgenerate() {
         return;
     }
     const languages = languageCodes.split(',').map(code => code.trim());
+    if (autoload_1.config.jsoncReferenceLanguage !== '') {
+        if (!languages.includes(autoload_1.config.jsoncReferenceLanguage)) {
+            vscode.window.showErrorMessage(`The reference language ${autoload_1.config.jsoncReferenceLanguage} is not present in the language codes`);
+            return;
+        }
+    }
     // Write to lang/{language}.json files
     if (autoload_1.config.langFolderPath === '') {
         vscode.window.showErrorMessage('No localization files generated: localization path not found or could not be determined.');
@@ -73,6 +78,18 @@ async function LELgenerate() {
         const mergedContent = { ...jsonContent, ...existingContent };
         fs.writeFileSync(outputFilePath, JSON.stringify(mergedContent, null, 2));
         vscode.window.showInformationMessage(`Localization strings extracted to ${outputFilePath}`);
+    }
+    // Convertiamo il Set in oggetto labels
+    const labels = {};
+    scanResult.localizationStrings.forEach(label => {
+        labels[label] = label; // O la traduzione se già disponibile
+    });
+    // Generazione dei .jsonc se configurato
+    if (autoload_1.config.jsoncReferenceLanguage !== '') {
+        (0, jsoncExporter_1.exportJsonc)(labels, scanResult.filesMap, {
+            outputPath: path.join(autoload_1.config.langFolderPath, `${autoload_1.config.jsoncReferenceLanguage}.jsonc`),
+            indentSize: 2
+        });
     }
 }
 //# sourceMappingURL=LELgenerate.js.map

@@ -28,6 +28,12 @@ exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
 const LELgenerate_1 = require("./commands/LELgenerate");
 const LELclearcache_1 = require("./commands/LELclearcache");
+/**
+ * Activates the Laravel Easy Localizer extension.
+ * This function is called by VS Code when the extension is loaded and activated.
+ * It registers the commands provided by the extension and sets up the necessary resources.
+ * @param context The extension context provided by VS Code.
+ */
 function activate(context) {
     /**
      * Command: laravel-easy-localizer.generate

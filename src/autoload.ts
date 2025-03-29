@@ -9,9 +9,16 @@ let config: Config = {
   autoDetectLocalizationPath: false,
   localizationPath: '',
   disableCache: false,
-  langFolderPath: ''
+  langFolderPath: '',
+  jsoncReferenceLanguage: ''
 };
 
+/**
+ * Initializes the extension's configuration by loading settings from the configuration file,
+ * determining the localization path, and populating the global `config` object.
+ * This function will execute only the first time that the extension is activated
+ * So that, if you change the configuration file, you must close and repoen Visual Studio Code
+ */
 async function initConfig(): Promise<void> {
   const configJson = <any>configModule.loadConfig();
 
@@ -25,7 +32,8 @@ async function initConfig(): Promise<void> {
       autoDetectLocalizationPath: configJson.autoDetectLocalizationPath,
       localizationPath: configJson.localizationPath,
       disableCache: configJson.disableCache,
-      langFolderPath: localizationPath ?? ''
+      langFolderPath: localizationPath ?? '',
+      jsoncReferenceLanguage: configJson.jsoncReferenceLanguage
   };
 }
 

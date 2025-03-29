@@ -3,25 +3,23 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as scan from './../scan';
 import { config } from './../autoload';
+import { ScanResult } from './../types/scanresult.d';
+import { exportJsonc } from './../jsoncExporter';
 
 /**
  * Scan project subdirectories for .php files and process them for ctreating the localization files
- * @returns 
  */
 export async function LELgenerate () {
 	vscode.window.showInformationMessage('Started extracting localization strings!');
 
-	const localizationStrings: Set<string> = new Set();
-
 	// Search for PHP files and process them in parallel
-	await scan.searchPhpFiles(config.rootPath, 
-	                          localizationStrings, 
-							  config.excludePaths,
-							  config.excludeGitIgnorePaths);
+	const scanResult: ScanResult = await scan.searchPhpFiles(config.rootPath, 
+							   							     config.excludePaths,
+							                                 config.excludeGitIgnorePaths);
 
 	// Generate JSON content
 	const jsonContent: { [key: string]: string } = {};
-	localizationStrings.forEach(str => {
+	scanResult.localizationStrings.forEach(str => {
 		jsonContent[str] = '';
 	});
 
@@ -38,6 +36,12 @@ export async function LELgenerate () {
 	}
 
 	const languages = languageCodes.split(',').map(code => code.trim());
+	if (config.jsoncReferenceLanguage !== '') {
+		if (!languages.includes(config.jsoncReferenceLanguage)) {
+			vscode.window.showErrorMessage(`The reference language ${config.jsoncReferenceLanguage} is not present in the language codes`);
+			return;
+		}
+	}
 
 	// Write to lang/{language}.json files
 	if (config.langFolderPath === '') {
@@ -62,5 +66,19 @@ export async function LELgenerate () {
 		fs.writeFileSync(outputFilePath, JSON.stringify(mergedContent, null, 2));
 
 		vscode.window.showInformationMessage(`Localization strings extracted to ${outputFilePath}`);
+	}
+
+	// Convertiamo il Set in oggetto labels
+	const labels: { [key: string]: string } = {};
+	scanResult.localizationStrings.forEach(label => {
+		labels[label] = label; // O la traduzione se già disponibile
+	});
+
+	// Generazione dei .jsonc se configurato
+	if (config.jsoncReferenceLanguage !== '') {
+		exportJsonc(labels, scanResult.filesMap, {
+			outputPath: path.join(config.langFolderPath, `${config.jsoncReferenceLanguage}.jsonc`),
+			indentSize: 2
+		});
 	}
 }
