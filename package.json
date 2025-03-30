@@ -11,19 +11,23 @@
       "company": "myobject.eu"
     }
   ],
-  "description": "",
-  "version": "0.0.7",
+  "description": "An extension that extracts and manages Laravel localization labels in JSON and JSONC format, with automatic detection, sync and cache options.",
+  "version": "0.1.1",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/The-Young-Maker/laravel-easy-localizer.git"
   },
   "categories": ["Programming Languages", "Language Packs"],
-  "keywords": ["laravel", "php", "localization", "translation", "language", "json", "i18n", "vscode"],
+  "keywords": ["laravel", "php", "localization", "translation", "language", "multilanguage", "json", "i18n", "vscode", "laravel localizer"],
   "engines": {
     "vscode": "^1.91.0"
   },
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:laravel-easy-localizer.generate",
+    "onCommand:laravel-easy-localizer.clearcache",
+    "onCommand:laravel-easy-localizer.sync-labels"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
