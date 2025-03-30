@@ -76,7 +76,9 @@ async function LELgenerate() {
             existingContent = JSON.parse(existingFile);
         }
         const mergedContent = { ...jsonContent, ...existingContent };
-        fs.writeFileSync(outputFilePath, JSON.stringify(mergedContent, null, 2));
+        const sortedContent = sortObjectByKey(mergedContent);
+        // Write to file
+        fs.writeFileSync(outputFilePath, JSON.stringify(sortedContent, null, 2));
         vscode.window.showInformationMessage(`Localization strings extracted to ${outputFilePath}`);
     }
     // Convertiamo il Set in oggetto labels
@@ -91,5 +93,18 @@ async function LELgenerate() {
             indentSize: 2
         });
     }
+}
+/**
+ * Sorts the keys of an object alphabetically.
+ * @param obj The object to sort.
+ * @returns A new object with the same properties as the input object, but with its keys sorted alphabetically.
+ */
+function sortObjectByKey(obj) {
+    return Object.keys(obj)
+        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+        .reduce((acc, key) => {
+        acc[key] = obj[key];
+        return acc;
+    }, {});
 }
 //# sourceMappingURL=LELgenerate.js.map

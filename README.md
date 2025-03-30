@@ -31,10 +31,13 @@ For launching the commands:
 #### List of all commands of the extension
 
 ##### `LEL: Generate`  
-Scan your project and generate/update language files in the lang/ directory, after prompting the list of the languages the list of languages ​​you want to generate localization for (e.g., "en,fr,es").  
+Scan your project and generate/update language files in the lang directory of the project, after prompting the list of the languages the list of languages ​​you want to generate localization for (e.g., "en,fr,es"). The labels in the generated localization .json files are sorted alphabetically.
 
 ##### `LEL: Clear cache`  
-The extension uses a cache to ignore PHP source files that have already been scanned and remain unchanged, ensuring faster localization updates. This command clears the cache, allowing you to rescan all files.  
+The extension uses a cache to ignore PHP source files that have already been scanned and remain unchanged, ensuring faster localization updates. This command clears the cache, allowing you to rescan all files.
+
+##### `LEL: Sync labels`
+Synchronizes all localization files by ensuring they contain the exact same set of keys, aligned in the same alphabetical order. Missing keys in any language file are automatically added with empty values. This makes translation management easier and keeps all localization files structurally consistent. This command is especially useful when adding a new language to your project, as it generates a complete translation file with all the necessary keys ready to be filled.
 
 ### Configuration
 
@@ -69,6 +72,34 @@ Here is an example for a typically `.laravel-easy-localizer.json` configuration 
     "jsoncReferenceLanguage": "en"
 }
 ```
+
+### Cache Management
+This extension uses an internal cache mechanism to improve performance during repeated scans. The cache is stored in the `.localization-cache.json` file at the root of the project. It keeps track of previously scanned files and their extracted labels to avoid unnecessary reprocessing.
+
+#### How It Works
+- When **cache is enabled** (default), the extension reads from the `.localization-cache.json` file to determine which files can be skipped.
+- After a scan, the cache is updated with any new or changed files.
+- When **cache is disabled**, the extension ignores and does not update the cache file. All files will be scanned every time.
+
+This behavior is controlled by the disableCache option in the configuration file.<br>
+If set to `true`, the extension will:
+
+- Ignore the existing `.localization-cache.json` file, even if present.
+- Always perform a full scan of all files.
+- Not write or update the cache file.
+
+#### Cache and `.jsonc` File Generation
+The cache also plays a role in the generation of the `.jsonc` file, which includes comments indicating where each label was found.<br>
+When cache is enabled:
+
+- The source file references used in the `.jsonc` output are retrieved from the cache if available, improving performance during export.
+- When cache is disabled:
+- The extension performs a full scan to regenerate source references, ensuring that the `.jsonc` file reflects the current state of all scanned files.
+
+#### Important Notes
+- The `.localization-cache.json file` is automatically managed by the extension and does not require manual editing.
+- For debugging or advanced testing, you can delete this file to force a full rescan.
+- When `disableCache` is `true`, performance may decrease for large projects, but it guarantees complete rescan behavior.
 
 ### Release Notes
 You can find a detailed list of extension implementations in the [CHANGELOG](CHANGELOG.md) file.

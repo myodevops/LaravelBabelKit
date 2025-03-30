@@ -1,4 +1,8 @@
 # Change Log
+## 0.1.0
+- The labels in the generated localization .json files are sorted alphabetically.
+- New function: `LEL: Sync labels`
+  
 ## 0.0.7
 - New option in configuration file: `jsoncReferenceLanguage`
 

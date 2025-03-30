@@ -34,6 +34,10 @@
       {
         "command": "laravel-easy-localizer.clearcache",
         "title": "LEL: Clear cache"
+      },
+      {
+        "command": "laravel-easy-localizer.sync-labels",
+        "title": "LEL: Sync labels"
       }
     ],
     "configuration": {

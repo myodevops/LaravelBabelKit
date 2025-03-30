@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { LELgenerate } from './commands/LELgenerate';
 import { LELclearcache } from './commands/LELclearcache';
+import { LELsynclabels } from './commands/LELsynclabels';
 
 /**
  * Activates the Laravel Easy Localizer extension.
@@ -24,6 +25,15 @@ export function activate(context: vscode.ExtensionContext) {
 	 */
 	const clearcacheCmd = vscode.commands.registerCommand('laravel-easy-localizer.clearcache', () => {
 		LELclearcache ();
+	});
+	context.subscriptions.push(clearcacheCmd);
+
+	/**
+	 * Command: laravel-easy-localizer.sync-labels
+	 * Synchronizes the localization files between languages
+	 */
+	const synclabelsCmd = vscode.commands.registerCommand('laravel-easy-localizer.sync-labels', () => {
+		LELsynclabels ();
 	});
 	context.subscriptions.push(clearcacheCmd);
 }
