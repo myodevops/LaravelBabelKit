@@ -26,8 +26,20 @@ export function exportJsonc(
   const outputPath = options.outputPath;
 
   const outputLines: string[] = ['{'];
+  
+  // Labels sorting case-insensitive
+  const entries = Object.entries(labels).sort((a, b) =>
+    a[0].toLowerCase().localeCompare(b[0].toLowerCase())
+  );
 
-  const entries = Object.entries(labels);
+  // Keys filesMap sorting case-insensitive
+  const sortedFilesMap: typeof filesMap = {};
+  Object.keys(filesMap)
+    .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+    .forEach((key) => {
+      sortedFilesMap[key] = filesMap[key];
+  });
+
   entries.forEach(([key, value], index) => {
     const fileData = filesMap[key] || {};
 

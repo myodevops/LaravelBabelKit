@@ -63,7 +63,10 @@ export async function LELgenerate () {
 		}
 
 		const mergedContent = { ...jsonContent, ...existingContent };
-		fs.writeFileSync(outputFilePath, JSON.stringify(mergedContent, null, 2));
+		const sortedContent = sortObjectByKey(mergedContent);
+
+		// Write to file
+		fs.writeFileSync(outputFilePath, JSON.stringify(sortedContent, null, 2));
 
 		vscode.window.showInformationMessage(`Localization strings extracted to ${outputFilePath}`);
 	}
@@ -82,3 +85,18 @@ export async function LELgenerate () {
 		});
 	}
 }
+
+/**
+ * Sorts the keys of an object alphabetically.
+ * @param obj The object to sort.
+ * @returns A new object with the same properties as the input object, but with its keys sorted alphabetically.
+ */
+function sortObjectByKey<T>(obj: Record<string, T>): Record<string, T> {
+	return Object.keys(obj)
+		.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+		.reduce((acc, key) => {
+			acc[key] = obj[key];
+			return acc;
+		}, {} as Record<string, T>);
+}
+  

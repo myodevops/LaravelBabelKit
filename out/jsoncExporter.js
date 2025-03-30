@@ -37,7 +37,15 @@ function exportJsonc(labels, filesMap, options) {
     const trailingComma = options.trailingComma ?? false;
     const outputPath = options.outputPath;
     const outputLines = ['{'];
-    const entries = Object.entries(labels);
+    // Labels sorting case-insensitive
+    const entries = Object.entries(labels).sort((a, b) => a[0].toLowerCase().localeCompare(b[0].toLowerCase()));
+    // Keys filesMap sorting case-insensitive
+    const sortedFilesMap = {};
+    Object.keys(filesMap)
+        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+        .forEach((key) => {
+        sortedFilesMap[key] = filesMap[key];
+    });
     entries.forEach(([key, value], index) => {
         const fileData = filesMap[key] || {};
         const paths = Object.entries(fileData).map(([filePath, meta], idx) => {
