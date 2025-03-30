@@ -1,4 +1,7 @@
 # Change Log
+## 0.1.1 
+- Logos and preparing for publication
+
 ## 0.1.0
 - The labels in the generated localization .json files are sorted alphabetically.
 - New function: `LEL: Sync labels`
