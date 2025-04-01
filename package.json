@@ -13,7 +13,7 @@
     }
   ],
   "description": "An extension that extracts and manages Laravel localization labels in JSON and JSONC format, with automatic detection, sync and cache options.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "icon": "icon.png",
   "license": "MIT",
   "repository": {
