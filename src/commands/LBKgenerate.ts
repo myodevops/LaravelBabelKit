@@ -1,15 +1,15 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as scan from './../scan';
-import { config } from './../autoload';
-import { ScanResult } from './../types/scanresult.d';
-import { exportJsonc } from './../jsoncExporter';
+import * as scan from '../scan';
+import { config } from '../autoload';
+import { ScanResult } from '../types/scanresult';
+import { exportJsonc } from '../jsoncExporter';
 
 /**
  * Scan project subdirectories for .php files and process them for ctreating the localization files
  */
-export async function LELgenerate () {
+export async function LBKgenerate () {
 	vscode.window.showInformationMessage('Started extracting localization strings!');
 
 	// Search for PHP files and process them in parallel

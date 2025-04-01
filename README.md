@@ -1,6 +1,6 @@
-## laravel-easy-localizer README
+## Laravel BabelKit README
 
-Laravel Easy Localizer is a Visual Studio Code extension that simplifies the process of extracting and managing localization strings in Laravel projects.
+Laravel BabelKit is a Visual Studio Code extension that simplifies the process of extracting and managing localization strings in Laravel projects.
 
 ### Features
 
@@ -15,33 +15,33 @@ Laravel Easy Localizer is a Visual Studio Code extension that simplifies the pro
 
 - Open Visual Studio Code
 - Go to the Extensions view (Ctrl+Shift+X)
-- Search for "Laravel Easy Localizer"
+- Search for "Laravel BabelKit"
 - Click Install
 
 ### Usage
 
-The extension provides a series of commands that perform localization file management operations. All commands begin with the `LEL:` prefix. 
+The extension provides a series of commands that perform localization file management operations. All commands begin with the `LBK:` prefix. 
 
 For launching the commands:
 
 - Open your Laravel project in VSCode
 - Press Ctrl+Shift+P (Cmd+Shift+P on macOS) to open the Command Palette
-- Type `LEL:` and select the desidered command
+- Type `LBK:` and select the desidered command
 
 #### List of all commands of the extension
 
-##### `LEL: Generate`  
+##### `LBK: Generate`  
 Scan your project and generate/update language files in the lang directory of the project, after prompting the list of the languages the list of languages ​​you want to generate localization for (e.g., "en,fr,es"). The labels in the generated localization .json files are sorted alphabetically.
 
-##### `LEL: Clear cache`  
+##### `LBK: Clear cache`  
 The extension uses a cache to ignore PHP source files that have already been scanned and remain unchanged, ensuring faster localization updates. This command clears the cache, allowing you to rescan all files.
 
-##### `LEL: Sync labels`
+##### `LBK: Sync labels`
 Synchronizes all localization files by ensuring they contain the exact same set of keys, aligned in the same alphabetical order. Missing keys in any language file are automatically added with empty values. This makes translation management easier and keeps all localization files structurally consistent. This command is especially useful when adding a new language to your project, as it generates a complete translation file with all the necessary keys ready to be filled.
 
 ### Configuration
 
-The configuration of the foo extension is done through the `.laravel-easy-localizer.json` file, which can be created in the main path of the project or in the `.vscode` directory.  
+The configuration of the foo extension is done through the `.laravel-babelkit.json` file, which can be created in the main path of the project or in the `.vscode` directory.  
 The file configuration is a JSON object that contain property for the configuration of the extension and the scope of the configuration is the project.  
 Here is the list of the property of the configuration file:
 
@@ -56,7 +56,7 @@ Here is the list of the property of the configuration file:
 | `jsoncReferenceLanguage` | Allows generating a `.jsonc` localization file with source file comments, only for a specific language defined by the option. | Enter a language code useful for creating the `.jsonc` file |    
 
 #### Example of a configuration file
-Here is an example for a typically `.laravel-easy-localizer.json` configuration file:
+Here is an example for a typically `.laravel-babelkit.json` configuration file:
 ```json
 {
     "defaultLanguages": "en,de,it",
@@ -109,6 +109,9 @@ Contributions are welcome!
 
 ### License
 This extension is released under the [MIT License](LICENSE).
+
+### Acknowledgment
+Special thanks to [TheYoungMaker](https://marketplace.visualstudio.com/publishers/TheYoungMaker) for the inspiration and for developing the original *Laravel Easy Localizer* extension, which laid the foundation for this project.
 
 ### Support
 If you encounter any problems or have suggestions, please open a issue in the [Issue section](https://github.com/The-Young-Maker/Laravel-Easy-Localizer/issues) of the project.

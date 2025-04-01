@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import * as synclabels from './../synclabels';
+import * as synclabels from '../synclabels';
 
 /**
  * Synchronizes the localization files between languages.
  */
-export async function LELsynclabels() {
+export async function LBKsynclabels() {
     try {
         await synclabels.syncLabels();
     } catch (error: any) {
