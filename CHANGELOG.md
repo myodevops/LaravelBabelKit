@@ -1,5 +1,5 @@
 # Change Log
-## 0.1.5
+## 0.1.7
  - Version alignment and background logo
 
 ## 0.1.4
