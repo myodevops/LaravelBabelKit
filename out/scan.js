@@ -64,7 +64,7 @@ async function searchPhpFiles(dir, excludePaths = [], excludeGitIgnorePaths) {
                 const isCached = cache.isFileCached(file, hash);
                 if (!isCached) {
                     const labelCountMap = {};
-                    const regex = /__\(\s*['"](.+?)['"]\s*(?:,\s*\[.*?\])?\s*\)/g;
+                    const regex = /(?:(@lang|__|trans))\(\s*(['"])(.+?)\2\s*(?:,\s*\[.*?\])?\s*\)/g;
                     let match;
                     // Find localized strings with __() e trans()
                     while ((match = regex.exec(content)) !== null) {
