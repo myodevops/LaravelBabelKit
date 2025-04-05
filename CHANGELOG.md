@@ -1,10 +1,16 @@
 # Change Log
+## 0.1.7
+ - Version alignment and background logo
+
+## 0.1.4
+ - Migration in Laravel BabelKit
+
 ## 0.1.1 
 - Logos and preparing for publication
 
 ## 0.1.0
 - The labels in the generated localization .json files are sorted alphabetically.
-- New function: `LEL: Sync labels`
+- New function: `LBK: Sync labels`
   
 ## 0.0.7
 - New option in configuration file: `jsoncReferenceLanguage`
@@ -24,7 +30,7 @@
 - New option in configuration file: `excludePaths`
 
 ## 0.0.2
-- Add the `.laravel-easy-localizer.json` configuration file
+- Add the `.laravel-babelkit.json` configuration file
 - New option in configuration file: `defaultLanguages`
 
 ## 0.0.1

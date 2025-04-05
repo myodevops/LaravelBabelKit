@@ -1,9 +1,10 @@
 {
-  "name": "laravel-easy-localizer",
-  "displayName": "Laravel Easy Localizer",
-  "publisher": "The-Young-Maker",
+  "name": "laravel-babelkit",
+  "displayName": "Laravel BabelKit",
+  "publisher": "myodevops",
   "author": {
-    "name": "The-Young-Maker"
+    "name": "nicola-myo",
+    "url": "https://github.com/nicola-myo"
   },
   "contributors": [
     {
@@ -12,42 +13,57 @@
     }
   ],
   "description": "An extension that extracts and manages Laravel localization labels in JSON and JSONC format, with automatic detection, sync and cache options.",
-  "version": "0.1.1",
+  "version": "0.1.7",
+  "icon": "icon.png",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/The-Young-Maker/laravel-easy-localizer.git"
   },
-  "categories": ["Programming Languages", "Language Packs"],
-  "keywords": ["laravel", "php", "localization", "translation", "language", "multilanguage", "json", "i18n", "vscode", "laravel localizer"],
+  "categories": [
+    "Programming Languages",
+    "Language Packs"
+  ],
+  "keywords": [
+    "laravel",
+    "php",
+    "localization",
+    "translation",
+    "language",
+    "multilanguage",
+    "json",
+    "i18n",
+    "vscode",
+    "laravel localizer"
+  ],
   "engines": {
     "vscode": "^1.91.0"
   },
   "activationEvents": [
-    "onCommand:laravel-easy-localizer.generate",
-    "onCommand:laravel-easy-localizer.clearcache",
-    "onCommand:laravel-easy-localizer.sync-labels"
+    "onCommand:laravel-babelkit.generate",
+    "onCommand:laravel-babelkit.clearcache",
+    "onCommand:laravel-babelkit.sync-labels"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "laravel-easy-localizer.generate",
-        "title": "LEL: Generate"
+        "command": "laravel-babelkit.generate",
+        "title": "LBK: Generate"
       },
       {
-        "command": "laravel-easy-localizer.clearcache",
-        "title": "LEL: Clear cache"
+        "command": "laravel-babelkit.clearcache",
+        "title": "LBK: Clear cache"
       },
       {
-        "command": "laravel-easy-localizer.sync-labels",
-        "title": "LEL: Sync labels"
+        "command": "laravel-babelkit.sync-labels",
+        "title": "LBK: Sync labels"
       }
     ],
     "configuration": {
-      "title": "Laravel Easy Localizer",
+      "title": "Laravel BabelKit",
       "properties": {
-        "laravelEasyLocalizer.defaultLanguages": {
+        "laravelBabelKit.defaultLanguages": {
           "type": "array",
           "items": {
             "type": "string"
@@ -57,7 +73,7 @@
           ],
           "description": "List of default language codes for which localization JSON files will be generated. Example: [\"en\", \"it\", \"fr\"]"
         },
-        "laravelEasyLocalizer.excludePaths": {
+        "laravelBabelkit.excludePaths": {
           "type": "array",
           "items": {
             "type": "string"
@@ -65,27 +81,27 @@
           "default": [],
           "description": "Array of glob patterns or folder paths to exclude from the PHP source scan. Useful to skip vendor folders, tests, or custom directories."
         },
-        "laravelEasyLocalizer.excludeGitIgnorePaths": {
+        "laravelBabelkit.excludeGitIgnorePaths": {
           "type": "boolean",
           "default": true,
           "description": "If enabled, all paths and files listed in .gitignore will be excluded from the PHP source scan."
         },
-        "laravelEasyLocalizer.localizationPath": {
+        "laravelBabelkit.localizationPath": {
           "type": "string",
           "default": "",
           "description": "Defines the relative or absolute path to the directory where localization JSON files are stored. If set, this path will take priority over automatic detection. Leave empty to enable auto-detection based on Laravel conventions."
         },
-        "laravelEasyLocalizer.autoDetectLocalizationPath": {
+        "laravelBabelKit.autoDetectLocalizationPath": {
           "type": "boolean",
           "default": true,
           "description": "Enables automatic detection of the localization directory if no manual path is set. It checks common Laravel paths like /lang and /resources/lang, and can propose creating the directory if not found."
         },
-        "laravelEasyLocalizer.disableCache": {
+        "laravelBabelKit.disableCache": {
           "type": "boolean",
           "default": false,
           "description": "Disables the caching mechanism used by the extension. By default, the extension caches the content of scanned files to avoid re-scanning unchanged files. Enabling this option forces the extension to re-scan all files every time."
         },
-        "laravelEasyLocalizer.jsoncReferenceLanguage": {
+        "laravelBabelKit.jsoncReferenceLanguage": {
           "type": "string",
           "default": "en",
           "description": "The language code to use as a reference when exporting to JSONC files. This language keys will be used as a base for all other language files, associating the list of source files of the labels as comments."

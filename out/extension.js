@@ -26,38 +26,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = activate;
 exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
-const LELgenerate_1 = require("./commands/LELgenerate");
-const LELclearcache_1 = require("./commands/LELclearcache");
-const LELsynclabels_1 = require("./commands/LELsynclabels");
+const LBKgenerate_1 = require("./commands/LBKgenerate");
+const LBKclearcache_1 = require("./commands/LBKclearcache");
+const LBKsynclabels_1 = require("./commands/LBKsynclabels");
 /**
- * Activates the Laravel Easy Localizer extension.
+ * Activates the Laravel BabelKit extension.
  * This function is called by VS Code when the extension is loaded and activated.
  * It registers the commands provided by the extension and sets up the necessary resources.
  * @param context The extension context provided by VS Code.
  */
 function activate(context) {
     /**
-     * Command: laravel-easy-localizer.generate
+     * Command: laravel-babelkit.generate
      * Generate the Json language files used by Laravel for the localization
      */
-    const generateCmd = vscode.commands.registerCommand('laravel-easy-localizer.generate', () => {
-        (0, LELgenerate_1.LELgenerate)();
+    const generateCmd = vscode.commands.registerCommand('laravel-babelkit.generate', () => {
+        (0, LBKgenerate_1.LBKgenerate)();
     });
     context.subscriptions.push(generateCmd);
     /**
-     * Command: laravel-easy-localizer.clearcache
+     * Command: laravel-babelkit.clearcache
      * Delete all the cached hash of the files, for rescanning all the PHP files
      */
-    const clearcacheCmd = vscode.commands.registerCommand('laravel-easy-localizer.clearcache', () => {
-        (0, LELclearcache_1.LELclearcache)();
+    const clearcacheCmd = vscode.commands.registerCommand('laravel-babelkit.clearcache', () => {
+        (0, LBKclearcache_1.LBKclearcache)();
     });
     context.subscriptions.push(clearcacheCmd);
     /**
-     * Command: laravel-easy-localizer.sync-labels
+     * Command: laravel-babelkit.sync-labels
      * Synchronizes the localization files between languages
      */
-    const synclabelsCmd = vscode.commands.registerCommand('laravel-easy-localizer.sync-labels', () => {
-        (0, LELsynclabels_1.LELsynclabels)();
+    const synclabelsCmd = vscode.commands.registerCommand('laravel-babelkit.sync-labels', () => {
+        (0, LBKsynclabels_1.LBKsynclabels)();
     });
     context.subscriptions.push(clearcacheCmd);
 }
