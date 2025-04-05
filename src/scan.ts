@@ -18,6 +18,7 @@ export async function searchPhpFiles(dir: string,
                                      excludeGitIgnorePaths: boolean): Promise<ScanResult> {
     const scanResult: ScanResult = {
         localizationStrings: new Set(),
+        filesScanned: 0,
         filesMap: {}
     };
                             
@@ -32,7 +33,8 @@ export async function searchPhpFiles(dir: string,
     }, async (progress, token) => {
         let processedFiles = 0;
         const totalFiles = files.length;
-        let fileCache = cache.getCache ();
+        
+    cache.getCache ();
 
         for (const file of files) {
             if (token.isCancellationRequested) {
@@ -47,12 +49,13 @@ export async function searchPhpFiles(dir: string,
 
                 if (!isCached) {
                     const labelCountMap: Record<string, number> = {};
-                    const regex = /(?:(@lang|__|trans))\(\s*(['"])(.+?)\2\s*(?:,\s*\[.*?\])?\s*\)/g;
+                    const regex = /(?:@lang|__|trans)\(\s*(['"])(.*?)\1\s*(?:,\s*\[.*?\])?\s*\)/g;
+
                     let match;
 
                     // Find localized strings with __() e trans()
                     while ((match = regex.exec(content)) !== null) {
-                        const label = match[1];
+                        const label = match[2];
                         labelCountMap[label] = (labelCountMap[label] || 0) + 1;
                     }
 
@@ -97,9 +100,8 @@ export async function searchPhpFiles(dir: string,
             progress.report({ increment: progressPercentage, message: `Scanned ${processedFiles} of ${totalFiles} file...` });
         }
 
+        scanResult.filesScanned = processedFiles;
         cache.saveCache();
-
-        vscode.window.showInformationMessage("Scan completed successfully!");
     });
 
     return scanResult;

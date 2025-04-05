@@ -10,8 +10,6 @@ import { exportJsonc } from '../jsoncExporter';
  * Scan project subdirectories for .php files and process them for ctreating the localization files
  */
 export async function LBKgenerate () {
-	vscode.window.showInformationMessage('Started extracting localization strings!');
-
 	// Search for PHP files and process them in parallel
 	const scanResult: ScanResult = await scan.searchPhpFiles(config.rootPath, 
 							   							     config.excludePaths,
@@ -67,8 +65,6 @@ export async function LBKgenerate () {
 
 		// Write to file
 		fs.writeFileSync(outputFilePath, JSON.stringify(sortedContent, null, 2));
-
-		vscode.window.showInformationMessage(`Localization strings extracted to ${outputFilePath}`);
 	}
 
 	// Convertiamo il Set in oggetto labels
@@ -84,8 +80,7 @@ export async function LBKgenerate () {
 			indentSize: 2
 		});
 	}
-
-	vscode.window.showInformationMessage(`Founded ${scanResult.localizationStrings.size} localization labels in ${scanResult.filesMap.size} files.`);
+	vscode.window.showInformationMessage(`Founded ${scanResult.localizationStrings.size} localization labels in ${scanResult.filesScanned} files.`);
 }
 
 /**

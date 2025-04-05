@@ -5,6 +5,7 @@
  */
 export interface ScanResult {
     localizationStrings: Set<string>;
+    filesScanned: number;
     filesMap: {
         [label: string]: {
           [filePath: string]: {
