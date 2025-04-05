@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { config } from './autoload';
-import { LabelCache, FileCacheEntry } from './types/labelcache';
+import { FileCacheEntry } from './types/labelcache';
 
 let fileCache: Record<string, FileCacheEntry> = {};
 let cacheFileIsRead = false;

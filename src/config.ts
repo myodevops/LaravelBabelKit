@@ -18,13 +18,13 @@ export function getRootPath () {
 }
 
 /**
- * Load the .laravel-easy-localizer.json configuration file and normalize the config object
+ * Load the .laravel-babelkit.json configuration file and normalize the config object
  * @param rootPath The root path of the Laravel project
  */
 export function loadConfig() {
     const configPaths = [
-        path.join(getRootPath(), '.laravel-easy-localizer.json'),
-        path.join(getRootPath(), '.vscode/laravel-easy-localizer.json')
+        path.join(getRootPath(), '.laravel-babelkit.json'),
+        path.join(getRootPath(), '.vscode/laravel-babelkit.json')
     ];
 
     for (const configPath of configPaths) {
@@ -89,7 +89,7 @@ export function loadGitIgnore(dir: string, ignoreRules: string[], projectRoot: s
 
 /**
  * Normalize the properties of the configuration file
- * @param config The config readed from the .laravel-easy-localizer.json file
+ * @param config The config readed from the .laravel-babelkit.json file
  */
 function normalizeConfig (config: any, rootPath: string) {
     if (typeof config.defaultLanguages === 'string') {

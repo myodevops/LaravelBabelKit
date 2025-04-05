@@ -1,5 +1,5 @@
 /**
- * Represents the configuration settings for the Laravel Easy Localizer extension.
+ * Represents the configuration settings for the Laravel BabelKit extension.
  * This interface defines the structure of the configuration object used to customize
  * the behavior of the localization process.
  */
