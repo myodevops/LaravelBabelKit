@@ -1,23 +1,113 @@
 {
-  "name": "laravel-localizer",
-  "displayName": "Laravel Localizer",
-  "description": "",
-  "version": "0.0.1",
+  "name": "laravel-babelkit",
+  "displayName": "Laravel BabelKit",
+  "publisher": "myodevops",
+  "author": {
+    "name": "nicola-myo",
+    "url": "https://github.com/nicola-myo"
+  },
+  "contributors": [
+    {
+      "name": "nicola-myo",
+      "company": "myobject.eu"
+    }
+  ],
+  "description": "An extension that extracts and manages Laravel localization labels in JSON and JSONC format, with automatic detection, sync and cache options.",
+  "version": "0.1.7",
+  "icon": "icon.png",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/The-Young-Maker/laravel-easy-localizer.git"
+  },
+  "categories": [
+    "Programming Languages",
+    "Language Packs"
+  ],
+  "keywords": [
+    "laravel",
+    "php",
+    "localization",
+    "translation",
+    "language",
+    "multilanguage",
+    "json",
+    "i18n",
+    "vscode",
+    "laravel localizer"
+  ],
   "engines": {
     "vscode": "^1.91.0"
   },
-  "categories": [
-    "Other"
+  "activationEvents": [
+    "onCommand:laravel-babelkit.generate",
+    "onCommand:laravel-babelkit.clearcache",
+    "onCommand:laravel-babelkit.sync-labels"
   ],
-  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "laravel-localizer.helloWorld",
-        "title": "Hello World"
+        "command": "laravel-babelkit.generate",
+        "title": "LBK: Generate"
+      },
+      {
+        "command": "laravel-babelkit.clearcache",
+        "title": "LBK: Clear cache"
+      },
+      {
+        "command": "laravel-babelkit.sync-labels",
+        "title": "LBK: Sync labels"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Laravel BabelKit",
+      "properties": {
+        "laravelBabelKit.defaultLanguages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "en"
+          ],
+          "description": "List of default language codes for which localization JSON files will be generated. Example: [\"en\", \"it\", \"fr\"]"
+        },
+        "laravelBabelkit.excludePaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Array of glob patterns or folder paths to exclude from the PHP source scan. Useful to skip vendor folders, tests, or custom directories."
+        },
+        "laravelBabelkit.excludeGitIgnorePaths": {
+          "type": "boolean",
+          "default": true,
+          "description": "If enabled, all paths and files listed in .gitignore will be excluded from the PHP source scan."
+        },
+        "laravelBabelkit.localizationPath": {
+          "type": "string",
+          "default": "",
+          "description": "Defines the relative or absolute path to the directory where localization JSON files are stored. If set, this path will take priority over automatic detection. Leave empty to enable auto-detection based on Laravel conventions."
+        },
+        "laravelBabelKit.autoDetectLocalizationPath": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enables automatic detection of the localization directory if no manual path is set. It checks common Laravel paths like /lang and /resources/lang, and can propose creating the directory if not found."
+        },
+        "laravelBabelKit.disableCache": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disables the caching mechanism used by the extension. By default, the extension caches the content of scanned files to avoid re-scanning unchanged files. Enabling this option forces the extension to re-scan all files every time."
+        },
+        "laravelBabelKit.jsoncReferenceLanguage": {
+          "type": "string",
+          "default": "en",
+          "description": "The language code to use as a reference when exporting to JSONC files. This language keys will be used as a base for all other language files, associating the list of source files of the labels as comments."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -28,14 +118,14 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.91.0",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
+    "@types/vscode": "^1.91.0",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.11.0",
-    "eslint": "^8.57.0",
-    "typescript": "^5.4.5",
     "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.4.0"
+    "@vscode/test-electron": "^2.4.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
   }
 }
