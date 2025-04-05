@@ -5,11 +5,20 @@ Laravel BabelKit is a Visual Studio Code extension that simplifies the process o
 ### Features
 
 - Automatically scans PHP files in your Laravel project for localization strings
-- Extracts strings in the format `{{ __("string") }}`
+- Extracts labels in the following formats:
+```
+   __('label')
+   __("label")
+   trans('label')
+   trans("label")
+   @lang('label')
+   @lang("label")
+```
+
 - Supports multiple languages simultaneously
 - Scan only modified source files since the last scan
 - Merges new strings with existing language files
-- Creates a master language file (default: 'en.json') with all extracted strings
+- Creates a master language file (default: 'en.jsonc') with all extracted strings and the corrispettive files as comments
 
 ### Installation
 
@@ -57,6 +66,19 @@ Here is the list of the property of the configuration file:
 
 #### Example of a configuration file
 Here is an example for a typically `.laravel-babelkit.json` configuration file:
+```json
+{
+    "defaultLanguages": "en,de,it",
+    "excludePaths": [
+        "public",
+        "tests",
+        "resources/views/auth"
+    ],
+    "jsoncReferenceLanguage": "en"
+}
+```
+
+Here is an example for a `.laravel-babelkit.json` configuration file with all the options:
 ```json
 {
     "defaultLanguages": "en,de,it",

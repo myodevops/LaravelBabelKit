@@ -1,4 +1,7 @@
 # Change Log
+## 0.1.8
+ - Consideration of multiple functions and labels in single and double quotes in scanning
+
 ## 0.1.7
  - Version alignment and background logo
 

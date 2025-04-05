@@ -34,7 +34,6 @@ const jsoncExporter_1 = require("../jsoncExporter");
  * Scan project subdirectories for .php files and process them for ctreating the localization files
  */
 async function LBKgenerate() {
-    vscode.window.showInformationMessage('Started extracting localization strings!');
     // Search for PHP files and process them in parallel
     const scanResult = await scan.searchPhpFiles(autoload_1.config.rootPath, autoload_1.config.excludePaths, autoload_1.config.excludeGitIgnorePaths);
     // Generate JSON content
@@ -79,7 +78,6 @@ async function LBKgenerate() {
         const sortedContent = sortObjectByKey(mergedContent);
         // Write to file
         fs.writeFileSync(outputFilePath, JSON.stringify(sortedContent, null, 2));
-        vscode.window.showInformationMessage(`Localization strings extracted to ${outputFilePath}`);
     }
     // Convertiamo il Set in oggetto labels
     const labels = {};
@@ -93,6 +91,7 @@ async function LBKgenerate() {
             indentSize: 2
         });
     }
+    vscode.window.showInformationMessage(`Founded ${scanResult.localizationStrings.size} localization labels in ${scanResult.filesScanned} files.`);
 }
 /**
  * Sorts the keys of an object alphabetically.

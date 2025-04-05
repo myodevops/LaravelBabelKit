@@ -40,6 +40,7 @@ const autoload_1 = require("./autoload");
 async function searchPhpFiles(dir, excludePaths = [], excludeGitIgnorePaths) {
     const scanResult = {
         localizationStrings: new Set(),
+        filesScanned: 0,
         filesMap: {}
     };
     // Recover all PHP and Blade files                                    
@@ -52,7 +53,7 @@ async function searchPhpFiles(dir, excludePaths = [], excludeGitIgnorePaths) {
     }, async (progress, token) => {
         let processedFiles = 0;
         const totalFiles = files.length;
-        let fileCache = cache.getCache();
+        cache.getCache();
         for (const file of files) {
             if (token.isCancellationRequested) {
                 vscode.window.showWarningMessage("Scan cancelled.");
@@ -64,11 +65,11 @@ async function searchPhpFiles(dir, excludePaths = [], excludeGitIgnorePaths) {
                 const isCached = cache.isFileCached(file, hash);
                 if (!isCached) {
                     const labelCountMap = {};
-                    const regex = /(?:(@lang|__|trans))\(\s*(['"])(.+?)\2\s*(?:,\s*\[.*?\])?\s*\)/g;
+                    const regex = /(?:@lang|__|trans)\(\s*(['"])(.*?)\1\s*(?:,\s*\[.*?\])?\s*\)/g;
                     let match;
                     // Find localized strings with __() e trans()
                     while ((match = regex.exec(content)) !== null) {
-                        const label = match[1];
+                        const label = match[2];
                         labelCountMap[label] = (labelCountMap[label] || 0) + 1;
                     }
                     for (const label in labelCountMap) {
@@ -108,8 +109,8 @@ async function searchPhpFiles(dir, excludePaths = [], excludeGitIgnorePaths) {
             const progressPercentage = (processedFiles / totalFiles) * 100;
             progress.report({ increment: progressPercentage, message: `Scanned ${processedFiles} of ${totalFiles} file...` });
         }
+        scanResult.filesScanned = processedFiles;
         cache.saveCache();
-        vscode.window.showInformationMessage("Scan completed successfully!");
     });
     return scanResult;
 }
