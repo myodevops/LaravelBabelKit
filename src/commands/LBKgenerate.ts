@@ -84,6 +84,8 @@ export async function LBKgenerate () {
 			indentSize: 2
 		});
 	}
+
+	vscode.window.showInformationMessage(`Founded ${scanResult.localizationStrings.size} localization labels in ${scanResult.filesMap.size} files.`);
 }
 
 /**

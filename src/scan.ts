@@ -47,7 +47,7 @@ export async function searchPhpFiles(dir: string,
 
                 if (!isCached) {
                     const labelCountMap: Record<string, number> = {};
-                    const regex = /__\(\s*['"](.+?)['"]\s*(?:,\s*\[.*?\])?\s*\)/g;
+                    const regex = /(?:(@lang|__|trans))\(\s*(['"])(.+?)\2\s*(?:,\s*\[.*?\])?\s*\)/g;
                     let match;
 
                     // Find localized strings with __() e trans()
