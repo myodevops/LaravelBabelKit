@@ -34,7 +34,7 @@ export async function searchPhpFiles(dir: string,
         let processedFiles = 0;
         const totalFiles = files.length;
         
-    cache.getCache ();
+        cache.getCache ();
 
         for (const file of files) {
             if (token.isCancellationRequested) {
@@ -142,7 +142,13 @@ async function getPhpFiles(
             }
         }
 
-        const entries = await fs.promises.readdir(dir, { withFileTypes: true });
+        var entries: fs.Dirent[];
+        try {
+            entries = await fs.promises.readdir(dir, { withFileTypes: true });
+        } catch (error) {
+            console.error(`Error reading directory ${dir}:`, error);
+            return [];
+        }
 
         const files = await Promise.all(entries.map(async (entry) => {
             const res = path.resolve(dir, entry.name);

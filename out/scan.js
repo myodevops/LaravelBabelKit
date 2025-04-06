@@ -140,7 +140,14 @@ async function getPhpFiles(dir, excludePaths = [], excludeGitIgnorePaths, ignore
                 }
             }
         }
-        const entries = await fs.promises.readdir(dir, { withFileTypes: true });
+        var entries;
+        try {
+            entries = await fs.promises.readdir(dir, { withFileTypes: true });
+        }
+        catch (error) {
+            console.error(`Error reading directory ${dir}:`, error);
+            return [];
+        }
         const files = await Promise.all(entries.map(async (entry) => {
             const res = path.resolve(dir, entry.name);
             return entry.isDirectory()

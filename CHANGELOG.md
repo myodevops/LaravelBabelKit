@@ -1,4 +1,7 @@
 # Change Log
+## 0.1.9
+ - Improvements in the `.gitignore` parsing
+
 ## 0.1.8
  - Consideration of multiple functions and labels in single and double quotes in scanning
 

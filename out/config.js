@@ -95,11 +95,19 @@ function loadGitIgnore(dir, ignoreRules, projectRoot) {
                 .map(rule => {
                 let isNegation = rule.startsWith("!");
                 let cleanRule = rule.replace(/^!/, "");
-                //let relativePath = path.relative(projectRoot, path.join(dir, cleanRule));
                 let normalizedRule = cleanRule.replace(/\\/g, "/");
-                let relativePath = normalizedRule.includes("*")
-                    ? normalizedRule
-                    : path.relative(projectRoot, path.join(dir, normalizedRule)).replace(/\\/g, "/");
+                let relativePath = "";
+                switch (true) {
+                    case normalizedRule === "*":
+                        relativePath = path.relative(projectRoot, path.join(dir, "**")).replace(/\\/g, "/");
+                        break;
+                    case (normalizedRule.startsWith("*")) && (dir === projectRoot):
+                        relativePath = normalizedRule;
+                        break;
+                    default:
+                        relativePath = path.relative(projectRoot, path.join(dir, normalizedRule)).replace(/\\/g, "/");
+                        break;
+                }
                 return isNegation ? `!${relativePath}` : relativePath;
             });
             ignoreRules.push(...newRules);

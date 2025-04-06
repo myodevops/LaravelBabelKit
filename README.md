@@ -58,7 +58,7 @@ Here is the list of the property of the configuration file:
 |-|---|---|
 | `defaultLanguages`      | The list of languages for the files to be generated, that is suggested in the prompt that appears after launching the multilingual file generation. | A serie of language codes, usually in standard ISO 639-1 format, separated by comma. |
 | `excludePaths`          | Array of directory paths that should be excluded from the scanning process. Any PHP files inside these directories will be ignored during localization extraction. |Specify only the directory names as seen from the project root (e.g., "vendor" instead of "./vendor" or "/var/www/myproject/vendor"). |
-| `excludeGitIgnorePaths` | When enabled, this option ensures that any files and directories matching the rules defined in the project's .gitignore files are automatically excluded from the localization scan process. It simplifies configuration by preventing unnecessary scanning of files such as vendor dependencies, build artifacts, or other ignored paths. | `true` (default value if the property is not specified) or `false`<br>**Note**: This option strictly follows Git's standard .gitignore behavior. Rules are applied relative to the directory where each .gitignore file is located. Improper or unconventional rule usage—such as referencing redundant or incorrect paths—will not be interpreted or corrected by the extension. Refer to the official Gitignore documentation for proper rule syntax and usage. |
+| `excludeGitIgnorePaths` | When enabled, this option ensures that any files and directories matching the rules defined in the project's `.gitignore` files are automatically excluded from the localization scan process. It simplifies configuration by preventing unnecessary scanning of files such as vendor dependencies, build artifacts, or other ignored paths. | `true` (default value if the property is not specified) or `false`<br>**Note**: This option strictly follows Git's standard `.gitignore` behavior. Rules are applied relative to the directory where each `.gitignore` file is located. Improper or unconventional rule usage—such as referencing redundant or incorrect paths—will not be interpreted or corrected by the extension. Refer to the official Gitignore documentation for proper rule syntax and usage. |
 | `localizationPath` | Defines the relative or absolute path to the directory where localization JSON files are stored. If set, this path will take priority over automatic detection. Use this option if your project has a custom localization directory structure. | A valid relative or absolute path. |
 | `autoDetectLocalizationPath ` | Enables automatic detection of the localization directory if no manual path is set. It checks common Laravel paths like /lang and /resources/lang, and can propose creating the directory if not found. | True (default value if the property is not specified) or False |
 | `disableCache` | Disables the caching mechanism used by the extension. By default, the extension caches the content of scanned files to avoid re-scanning unchanged files, significantly speeding up subsequent scans. Enabling this option forces the extension to re-scan all files every time, regardless of whether they have been modified. | `true` or `false` (default value if the property is not specified: `false`) |
@@ -119,9 +119,12 @@ When cache is enabled:
 - The extension performs a full scan to regenerate source references, ensuring that the `.jsonc` file reflects the current state of all scanned files.
 
 #### Important Notes
-- The `.localization-cache.json file` is automatically managed by the extension and does not require manual editing.
-- For debugging or advanced testing, you can delete this file to force a full rescan.
+- In case of unexpected results in generating localization files, delete the cache using the appropriate command and relaunch the generation.
+- The `.localization-cache.json` file is automatically managed by the extension and does not require manual editing.
+- Including files `.laravel-babelkit.json` and `.localization-cache.json` in the `.gitignore` file is highly recommended.
 - When `disableCache` is `true`, performance may decrease for large projects, but it guarantees complete rescan behavior.
+- The handling of `.gitignore` files is implemented to cover the most common cases, but it may not fully reflect all edge cases defined by Git's ignore rules. 
+- If you notice any inconsistencies or missing scenarios, feel free to open an issue — they will be reviewed and addressed as soon as possible.
 
 ### Release Notes
 You can find a detailed list of extension implementations in the [CHANGELOG](CHANGELOG.md) file.
