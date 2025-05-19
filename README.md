@@ -139,6 +139,6 @@ This extension is released under the [MIT License](LICENSE).
 Special thanks to [TheYoungMaker](https://marketplace.visualstudio.com/publishers/TheYoungMaker) for the inspiration and for developing the original *Laravel Easy Localizer* extension, which laid the foundation for this project.
 
 ### Support
-If you encounter any problems or have suggestions, please open a issue in the [Issue section](https://github.com/The-Young-Maker/Laravel-Easy-Localizer/issues) of the project.
+If you encounter any problems or have suggestions, please open a issue in the [Issue section](https://github.com/myodevops/LaravelBabelKit/issues)) of the project.
 
 **Enjoy!**
